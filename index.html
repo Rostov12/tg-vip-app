@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>身心保健 ｜ 專屬福利資源庫</title>
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              gold: '#f59e0b',
+              neon: '#ec4899',
+              dark: '#0b0f19',
+              card: '#131b2e',
+              border: '#1e293b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .gold-gradient {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    .neon-gradient {
+      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+    }
+    .glass-card {
+      background: rgba(19, 27, 46, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-24">
+
+  <!-- 頂部導航與標題 -->
+  <header class="sticky top-0 z-40 bg-[#0b0f19]/90 backdrop-blur-md border-b border-brand-border px-4 py-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-full gold-gradient flex items-center justify-center font-black text-black text-sm shadow-lg shadow-amber-500/20">
+          🔞
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-white tracking-wide">身心保健・專屬資源庫</h1>
+          <p class="text-[11px] text-zinc-400">每日 4K 無碼原片・極速雲端串流</p>
+        </div>
+      </div>
+      <a href="https://t.me/+BOERCyv4q7Y1NzM1" target="_blank" class="px-2.5 py-1 text-xs rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-medium">
+        大本營 ↗
+      </a>
+    </div>
+
+    <!-- 搜索欄 -->
+    <div class="mt-3 relative">
+      <input type="text" id="searchInput" placeholder="搜尋模特名、片名、標籤（如：秀人、美杜莎、OF）..." 
+             class="w-full bg-[#131b2e] border border-brand-border rounded-xl px-9 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500 transition-all">
+      <svg class="w-4 h-4 text-zinc-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <button id="clearSearch" class="hidden absolute right-3 top-2 text-xs text-zinc-400 hover:text-white">✕</button>
+    </div>
+
+    <!-- 標籤分類篩選 -->
+    <div class="mt-2.5 flex space-x-2 overflow-x-auto custom-scroll py-1" id="tagPills">
+      <button data-tag="ALL" class="tag-pill active px-3 py-1 rounded-full text-xs font-medium bg-amber-500 text-black shadow-md shadow-amber-500/20">全部</button>
+      <button data-tag="秀人網" class="tag-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border">秀人網</button>
+      <button data-tag="OnlyFans" class="tag-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border">OnlyFans</button>
+      <button data-tag="蜜桃社" class="tag-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border">蜜桃社</button>
+      <button data-tag="麻豆傳媒" class="tag-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border">麻豆傳媒</button>
+      <button data-tag="黑絲" class="tag-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border">黑絲高跟</button>
+    </div>
+  </header>
+
+  <!-- 置頂 PikPak VIP 福利通知欄 -->
+  <section class="px-4 mt-3">
+    <div class="glass-card rounded-2xl p-3 border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-transparent flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-lg">
+          🎁
+        </div>
+        <div>
+          <div class="text-xs font-bold text-amber-400">PikPak 雲端免翻牆特權</div>
+          <div class="text-[11px] text-zinc-300">新用戶兌換邀請碼：<code class="text-amber-300 font-mono font-bold bg-black/40 px-1 py-0.5 rounded cursor-pointer" onclick="copyInviteCode()">54949222</code></div>
+        </div>
+      </div>
+      <a href="https://mypikpak.com/drive/activity/invited?invitation-code=54949222" target="_blank" 
+         class="px-3 py-1.5 rounded-xl gold-gradient text-black text-xs font-black shadow-md shadow-amber-500/20 flex-shrink-0">
+        免費領 VIP
+      </a>
+    </div>
+  </section>
+
+  <!-- 內容網格列表 -->
+  <main class="px-4 mt-4">
+    <div class="flex items-center justify-between mb-2.5">
+      <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        實時上架資源庫 (<span id="itemCount">0</span>)
+      </h2>
+      <span class="text-[11px] text-zinc-500">雲端秒播・原畫無碼</span>
+    </div>
+
+    <!-- 瀑布流/網格卡片容器 -->
+    <div id="gridContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <!-- 卡片由 JS 動態注入 -->
+    </div>
+
+    <!-- 空狀態 -->
+    <div id="emptyState" class="hidden py-16 text-center text-zinc-500">
+      <div class="text-3xl mb-2">🔍</div>
+      <p class="text-xs">找不到相關資源，換個關鍵詞試試吧！</p>
+    </div>
+  </main>
+
+  <!-- 詳情彈窗抽屜 (Modal) -->
+  <div id="detailModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
+    <div class="w-full max-w-lg bg-[#131b2e] rounded-t-3xl sm:rounded-3xl border border-brand-border overflow-hidden max-h-[85vh] flex flex-col shadow-2xl">
+      <!-- 頂部視訊預覽佔位 / 封面 -->
+      <div class="relative h-44 bg-gradient-to-br from-indigo-950 via-slate-900 to-rose-950 flex items-center justify-center">
+        <div class="absolute inset-0 bg-cover bg-center opacity-40" id="modalBg"></div>
+        <div class="relative z-10 text-center px-4">
+          <div class="w-12 h-12 mx-auto rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-xl shadow-lg mb-2 cursor-pointer hover:scale-105 transition-transform" id="modalPlayBtn">
+            ▶️
+          </div>
+          <span class="px-2.5 py-0.5 rounded-full bg-black/50 text-[11px] text-zinc-300 border border-white/10 font-mono" id="modalBadge">4K 原畫無碼</span>
+        </div>
+        <button id="closeModal" class="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center text-sm">✕</button>
+      </div>
+
+      <!-- 詳情內文 -->
+      <div class="p-4 overflow-y-auto custom-scroll space-y-3 flex-1">
+        <div>
+          <h3 class="text-sm font-bold text-white leading-snug" id="modalTitle">標題載入中...</h3>
+          <div class="flex items-center space-x-2 mt-1">
+            <span class="text-xs text-amber-400 font-semibold" id="modalBlogger">模特名</span>
+            <span class="text-zinc-600">•</span>
+            <span class="text-[11px] text-zinc-400" id="modalTime">2026-11-10</span>
+          </div>
+        </div>
+
+        <div class="bg-black/30 rounded-xl p-3 border border-white/5">
+          <div class="text-[11px] text-zinc-400 font-medium mb-1">私密看點：</div>
+          <p class="text-xs text-zinc-300 leading-relaxed" id="modalDesc"></p>
+        </div>
+
+        <div>
+          <div class="text-[11px] text-zinc-400 mb-1.5 font-medium">標籤分類：</div>
+          <div class="flex flex-wrap gap-1.5" id="modalTags"></div>
+        </div>
+      </div>
+
+      <!-- 底部行動按鈕區 -->
+      <div class="p-3 bg-[#0b0f19] border-t border-brand-border space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <a id="btnPikPak" href="#" target="_blank" 
+             class="w-full py-2.5 rounded-xl gold-gradient text-black font-black text-xs flex items-center justify-center space-x-1 shadow-lg shadow-amber-500/20 active:scale-95 transition-transform">
+            <span>📥 存入 PikPak 秒播</span>
+          </a>
+          <button id="btnJisou" 
+             class="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center space-x-1 shadow-lg shadow-blue-500/20 active:scale-95 transition-transform">
+            <span>🔍 極搜查同款</span>
+          </button>
+        </div>
+        <a href="https://t.me/+BOERCyv4q7Y1NzM1" target="_blank" 
+           class="block w-full py-2 rounded-xl bg-[#1e293b] text-zinc-300 text-center text-[11px] font-medium border border-white/5 hover:text-white">
+          💬 加入官方交流討論大本營防失聯 ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast 提示 -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-black/90 border border-white/20 text-white text-xs px-4 py-2 rounded-full shadow-2xl opacity-0 pointer-events-none transition-opacity duration-300">
+    已成功複製！
+  </div>
+
+  <!-- 業務邏輯腳本 -->
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      try {
+        tg.setHeaderColor('#0b0f19');
+        tg.setBackgroundColor('#0b0f19');
+      } catch(e) {}
+    }
+
+    let catalogData = [];
+    let currentFilterTag = 'ALL';
+
+    function haptic() {
+      try {
+        if (tg && tg.HapticFeedback) {
+          tg.HapticFeedback.impactOccurred('medium');
+        }
+      } catch (e) {}
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    function copyInviteCode() {
+      haptic();
+      navigator.clipboard.writeText('54949222').then(() => {
+        showToast('🎉 PikPak 邀請碼 54949222 已複製！');
+      }).catch(() => {
+        showToast('邀請碼：54949222');
+      });
+    }
+
+    async function loadCatalog() {
+      try {
+        const res = await fetch('catalog.json?' + new Date().getTime());
+        catalogData = await res.json();
+      } catch (e) {
+        console.warn('載入 catalog.json 失敗，使用內建備份數據');
+        catalogData = [
+          {
+            id: 14580,
+            title: "【秀人網】美杜莎 4K 高畫質私密合輯",
+            blogger: "美杜莎",
+            search_kw: "美杜莎",
+            tags: ["#秀人網", "#美杜莎", "#4K原片", "#無碼流出"],
+            preview_desc: "超絕極品私房無碼實拍流出，高畫質完整視覺衝擊，身段極致曲線畢露！",
+            pikpak_url: "https://mypikpak.com/drive/activity/invited?invitation-code=54949222",
+            jisou_url: "https://t.me/jisou2?start=a_1251504388",
+            video_count: 3,
+            created_at: "2026-11-10 08:00"
+          }
+        ];
+      }
+      renderGrid();
+    }
+
+    function renderGrid() {
+      const container = document.getElementById('gridContainer');
+      const empty = document.getElementById('emptyState');
+      const countEl = document.getElementById('itemCount');
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+
+      container.innerHTML = '';
+
+      const filtered = catalogData.filter(item => {
+        const matchTag = (currentFilterTag === 'ALL') || 
+          (item.tags && item.tags.some(t => t.includes(currentFilterTag))) ||
+          (item.blogger && item.blogger.includes(currentFilterTag));
+        
+        const matchQuery = !query || 
+          item.title.toLowerCase().includes(query) ||
+          item.blogger.toLowerCase().includes(query) ||
+          (item.tags && item.tags.some(t => t.toLowerCase().includes(query))) ||
+          item.preview_desc.toLowerCase().includes(query);
+
+        return matchTag && matchQuery;
+      });
+
+      countEl.innerText = filtered.length;
+
+      if (filtered.length === 0) {
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "glass-card rounded-2xl p-3 border border-brand-border hover:border-amber-500/40 transition-all cursor-pointer flex flex-col justify-between";
+        card.onclick = () => openDetail(item);
+
+        const tagsHtml = (item.tags || []).slice(0, 3).map(t => 
+          `<span class="text-[10px] px-1.5 py-0.5 rounded bg-black/40 text-zinc-400 border border-white/5">${t}</span>`
+        ).join(' ');
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/20">
+                ${item.blogger || '精選推薦'}
+              </span>
+              <span class="text-[10px] text-zinc-500 font-mono">${item.video_count > 1 ? `🎬 ${item.video_count}部合集` : '📹 單篇原片'}</span>
+            </div>
+            <h3 class="text-xs font-bold text-white mb-1.5 line-clamp-1">${item.title}</h3>
+            <p class="text-[11px] text-zinc-400 line-clamp-2 leading-relaxed mb-2">${item.preview_desc}</p>
+          </div>
+          <div>
+            <div class="flex flex-wrap gap-1 mb-2.5">${tagsHtml}</div>
+            <div class="flex items-center justify-between pt-2 border-t border-white/5">
+              <span class="text-[10px] text-zinc-500">${item.created_at || '最新'}</span>
+              <span class="text-[11px] font-bold text-amber-400 flex items-center gap-0.5">
+                點擊查看 ➔
+              </span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openDetail(item) {
+      haptic();
+      document.getElementById('modalTitle').innerText = item.title;
+      document.getElementById('modalBlogger').innerText = `博主：${item.blogger}`;
+      document.getElementById('modalTime').innerText = item.created_at || '最新上架';
+      document.getElementById('modalDesc').innerText = item.preview_desc;
+      document.getElementById('modalBadge').innerText = item.video_count > 1 ? `包含 ${item.video_count} 部高畫質原檔` : '4K 原畫完整無碼';
+
+      const tagsContainer = document.getElementById('modalTags');
+      tagsContainer.innerHTML = (item.tags || []).map(t => 
+        `<span class="text-[11px] px-2 py-0.5 rounded-full bg-white/5 text-zinc-300 border border-white/10">${t}</span>`
+      ).join('');
+
+      // 按鈕綁定
+      const btnPik = document.getElementById('btnPikPak');
+      btnPik.href = item.pikpak_url || "https://mypikpak.com/drive/activity/invited?invitation-code=54949222";
+
+      const btnJisou = document.getElementById('btnJisou');
+      btnJisou.onclick = (e) => {
+        e.preventDefault();
+        haptic();
+        const kw = item.search_kw || item.blogger;
+        navigator.clipboard.writeText(kw).then(() => {
+          showToast(`已複製搜詞「${kw}」，正在開啟極搜...`);
+          setTimeout(() => {
+            window.open(item.jisou_url || "https://t.me/jisou2?start=a_1251504388", "_blank");
+          }, 400);
+        }).catch(() => {
+          window.open(item.jisou_url || "https://t.me/jisou2?start=a_1251504388", "_blank");
+        });
+      };
+
+      document.getElementById('detailModal').classList.remove('hidden');
+    }
+
+    document.getElementById('closeModal').onclick = () => {
+      haptic();
+      document.getElementById('detailModal').classList.add('hidden');
+    };
+
+    document.getElementById('detailModal').onclick = (e) => {
+      if (e.target.id === 'detailModal') {
+        haptic();
+        document.getElementById('detailModal').classList.add('hidden');
+      }
+    };
+
+    // 標籤切換
+    document.querySelectorAll('.tag-pill').forEach(pill => {
+      pill.onclick = () => {
+        haptic();
+        document.querySelectorAll('.tag-pill').forEach(p => {
+          p.classList.remove('bg-amber-500', 'text-black', 'shadow-md', 'shadow-amber-500/20');
+          p.classList.add('bg-[#131b2e]', 'text-zinc-300', 'border', 'border-brand-border');
+        });
+        pill.classList.remove('bg-[#131b2e]', 'text-zinc-300', 'border', 'border-brand-border');
+        pill.classList.add('bg-amber-500', 'text-black', 'shadow-md', 'shadow-amber-500/20');
+
+        currentFilterTag = pill.getAttribute('data-tag');
+        renderGrid();
+      };
+    });
+
+    // 搜索監聽
+    const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearSearch');
+    searchInput.oninput = () => {
+      if (searchInput.value.trim()) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      renderGrid();
+    };
+
+    clearBtn.onclick = () => {
+      haptic();
+      searchInput.value = '';
+      clearBtn.classList.add('hidden');
+      renderGrid();
+    };
+
+    // 初始載入
+    loadCatalog();
+  </script>
+</body>
+</html>
