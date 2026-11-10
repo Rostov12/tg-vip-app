@@ -16,6 +16,7 @@
             brand: {
               gold: '#f59e0b',
               neon: '#ec4899',
+              of: '#00aff0',
               dark: '#0b0f19',
               card: '#131b2e',
               border: '#1e293b'
@@ -39,8 +40,8 @@
     .gold-gradient {
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     }
-    .neon-gradient {
-      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+    .of-gradient {
+      background: linear-gradient(135deg, #00aff0 0%, #0084c7 100%);
     }
     .glass-card {
       background: rgba(19, 27, 46, 0.85);
@@ -53,7 +54,7 @@
 <body class="min-h-screen pb-24">
 
   <!-- 頂部導航與標題 -->
-  <header class="sticky top-0 z-40 bg-[#0b0f19]/90 backdrop-blur-md border-b border-brand-border px-4 py-3">
+  <header class="sticky top-0 z-40 bg-[#0b0f19]/95 backdrop-blur-md border-b border-brand-border px-4 py-3">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-2">
         <div class="w-8 h-8 rounded-full gold-gradient flex items-center justify-center font-black text-black text-sm shadow-lg shadow-amber-500/20">
@@ -61,7 +62,7 @@
         </div>
         <div>
           <h1 class="text-base font-bold text-white tracking-wide">身心保健・專屬資源庫</h1>
-          <p class="text-[11px] text-zinc-400">每日 4K 無碼原片・極速雲端串流</p>
+          <p class="text-[11px] text-zinc-400">每日 4K 無碼原片・在線秒播試看</p>
         </div>
       </div>
       <a href="https://t.me/+BOERCyv4q7Y1NzM1" target="_blank" class="px-2.5 py-1 text-xs rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-medium">
@@ -71,7 +72,7 @@
 
     <!-- 搜索欄 -->
     <div class="mt-3 relative">
-      <input type="text" id="searchInput" placeholder="搜尋模特名、片名、標籤（如：秀人、美杜莎、OF）..." 
+      <input type="text" id="searchInput" placeholder="搜尋 OnlyFans、模特名、片名、標籤..." 
              class="w-full bg-[#131b2e] border border-brand-border rounded-xl px-9 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500 transition-all">
       <svg class="w-4 h-4 text-zinc-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -79,14 +80,26 @@
       <button id="clearSearch" class="hidden absolute right-3 top-2 text-xs text-zinc-400 hover:text-white">✕</button>
     </div>
 
-    <!-- 標籤分類篩選 -->
+    <!-- 頂部清晰分類導航 (OnlyFans 獨立醒目標示) -->
     <div class="mt-2.5 flex space-x-2 overflow-x-auto custom-scroll py-1" id="tagPills">
-      <button data-tag="ALL" class="tag-pill active px-3 py-1 rounded-full text-xs font-medium bg-amber-500 text-black shadow-md shadow-amber-500/20">全部</button>
-      <button data-tag="秀人網" class="tag-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border">秀人網</button>
-      <button data-tag="OnlyFans" class="tag-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border">OnlyFans</button>
-      <button data-tag="蜜桃社" class="tag-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border">蜜桃社</button>
-      <button data-tag="麻豆傳媒" class="tag-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border">麻豆傳媒</button>
-      <button data-tag="黑絲" class="tag-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border">黑絲高跟</button>
+      <button data-tag="ALL" class="tag-pill active px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500 text-black shadow-md shadow-amber-500/20 flex-shrink-0 flex items-center gap-1">
+        <span>🔥</span> 全部精選
+      </button>
+      <button data-tag="OnlyFans" class="tag-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#00aff0]/15 text-[#00aff0] border border-[#00aff0]/40 flex-shrink-0 flex items-center gap-1 shadow-sm">
+        <span>💎</span> OnlyFans 專區
+      </button>
+      <button data-tag="秀人網" class="tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border flex-shrink-0">
+        👑 秀人網特輯
+      </button>
+      <button data-tag="蜜桃社" class="tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border flex-shrink-0">
+        🍑 蜜桃社寫真
+      </button>
+      <button data-tag="麻豆傳媒" class="tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border flex-shrink-0">
+        🎬 麻豆傳媒
+      </button>
+      <button data-tag="黑絲美腿" class="tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border flex-shrink-0">
+        👠 黑絲美腿
+      </button>
     </div>
   </header>
 
@@ -98,8 +111,8 @@
           🎁
         </div>
         <div>
-          <div class="text-xs font-bold text-amber-400">PikPak 雲端免翻牆特權</div>
-          <div class="text-[11px] text-zinc-300">新用戶兌換邀請碼：<code class="text-amber-300 font-mono font-bold bg-black/40 px-1 py-0.5 rounded cursor-pointer" onclick="copyInviteCode()">54949222</code></div>
+          <div class="text-xs font-bold text-amber-400">PikPak 雲端免翻牆高速秒播</div>
+          <div class="text-[11px] text-zinc-300">新用戶兌換碼：<code class="text-amber-300 font-mono font-bold bg-black/40 px-1 py-0.5 rounded cursor-pointer" onclick="copyInviteCode()">54949222</code></div>
         </div>
       </div>
       <a href="https://mypikpak.com/drive/activity/invited?invitation-code=54949222" target="_blank" 
@@ -114,12 +127,12 @@
     <div class="flex items-center justify-between mb-2.5">
       <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-        實時上架資源庫 (<span id="itemCount">0</span>)
+        實時上架資源 (<span id="itemCount">0</span>)
       </h2>
-      <span class="text-[11px] text-zinc-500">雲端秒播・原畫無碼</span>
+      <span class="text-[11px] text-zinc-500">支援在線試看・原畫無碼</span>
     </div>
 
-    <!-- 瀑布流/網格卡片容器 -->
+    <!-- 瀑布流/雙列網格卡片容器 -->
     <div id="gridContainer" class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
       <!-- 卡片由 JS 動態注入 -->
     </div>
@@ -127,28 +140,45 @@
     <!-- 空狀態 -->
     <div id="emptyState" class="hidden py-16 text-center text-zinc-500">
       <div class="text-3xl mb-2">🔍</div>
-      <p class="text-xs">找不到相關資源，換個關鍵詞試試吧！</p>
+      <p class="text-xs">找不到相關資源，換個關鍵詞或切換標籤試試吧！</p>
     </div>
   </main>
 
-  <!-- 詳情彈窗抽屜 (Modal) -->
-  <div id="detailModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
-    <div class="w-full max-w-lg bg-[#131b2e] rounded-t-3xl sm:rounded-3xl border border-brand-border overflow-hidden max-h-[85vh] flex flex-col shadow-2xl">
-      <!-- 頂部視訊預覽佔位 / 封面 -->
-      <div class="relative h-44 bg-gradient-to-br from-indigo-950 via-slate-900 to-rose-950 flex items-center justify-center">
-        <div class="absolute inset-0 bg-cover bg-center opacity-40" id="modalBg"></div>
-        <div class="relative z-10 text-center px-4">
-          <div class="w-12 h-12 mx-auto rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-xl shadow-lg mb-2 cursor-pointer hover:scale-105 transition-transform" id="modalPlayBtn">
-            ▶️
+  <!-- 詳情與影片在線播放彈窗 (Video Player Modal) -->
+  <div id="detailModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
+    <div class="w-full max-w-lg bg-[#131b2e] rounded-t-3xl sm:rounded-3xl border border-brand-border overflow-hidden max-h-[90vh] flex flex-col shadow-2xl">
+      
+      <!-- 頂部視訊播放器 / 封面試看區 -->
+      <div class="relative h-60 bg-black flex items-center justify-center overflow-hidden">
+        <!-- 真正可播放的 HTML5 Video Player -->
+        <video id="modalVideoPlayer" class="hidden w-full h-full object-contain bg-black" controls playsinline webkit-playsinline></video>
+        
+        <!-- 封面預覽與點擊播放遮罩 -->
+        <div id="modalCoverContainer" class="absolute inset-0 cursor-pointer flex items-center justify-center" onclick="startVideoPlayback()">
+          <img id="modalCoverImg" src="" class="absolute inset-0 w-full h-full object-cover opacity-60" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/40"></div>
+          
+          <div class="relative z-10 text-center px-4">
+            <div class="w-14 h-14 mx-auto rounded-full bg-rose-600/90 text-white flex items-center justify-center text-2xl shadow-xl shadow-rose-600/50 hover:scale-110 active:scale-95 transition-all mb-2 border border-white/30 animate-pulse">
+              ▶️
+            </div>
+            <div class="text-xs font-bold text-white tracking-wide">點擊在此直接播放試看</div>
+            <span class="mt-1.5 inline-block px-2.5 py-0.5 rounded-full bg-black/60 text-[10px] text-amber-300 border border-amber-400/30 font-mono" id="modalBadge">
+              4K 原畫無碼
+            </span>
           </div>
-          <span class="px-2.5 py-0.5 rounded-full bg-black/50 text-[11px] text-zinc-300 border border-white/10 font-mono" id="modalBadge">4K 原畫無碼</span>
         </div>
-        <button id="closeModal" class="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center text-sm">✕</button>
+
+        <button id="closeModal" class="absolute top-3 right-3 z-30 w-8 h-8 rounded-full bg-black/70 text-white flex items-center justify-center text-sm border border-white/20">✕</button>
       </div>
 
       <!-- 詳情內文 -->
       <div class="p-4 overflow-y-auto custom-scroll space-y-3 flex-1">
         <div>
+          <div class="flex items-center gap-1.5 mb-1">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/30" id="modalCategory">分類</span>
+            <span class="text-[10px] text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/20">⚡ 支援在線預覽播放</span>
+          </div>
           <h3 class="text-sm font-bold text-white leading-snug" id="modalTitle">標題載入中...</h3>
           <div class="flex items-center space-x-2 mt-1">
             <span class="text-xs text-amber-400 font-semibold" id="modalBlogger">模特名</span>
@@ -157,7 +187,7 @@
           </div>
         </div>
 
-        <div class="bg-black/30 rounded-xl p-3 border border-white/5">
+        <div class="bg-black/40 rounded-xl p-3 border border-white/5">
           <div class="text-[11px] text-zinc-400 font-medium mb-1">私密看點：</div>
           <p class="text-xs text-zinc-300 leading-relaxed" id="modalDesc"></p>
         </div>
@@ -165,6 +195,14 @@
         <div>
           <div class="text-[11px] text-zinc-400 mb-1.5 font-medium">標籤分類：</div>
           <div class="flex flex-wrap gap-1.5" id="modalTags"></div>
+        </div>
+
+        <!-- 試看提示橫幅 -->
+        <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-2.5 text-[11px] text-amber-300/90 flex items-start gap-2">
+          <span>💡</span>
+          <div>
+            本平台提供在線流暢試看片段。若要觀看<b>完整 4K 無壓縮原檔（幾GB無碼長篇）</b>，請點擊下方按鈕一鍵存入 PikPak 網盤高速播放！
+          </div>
         </div>
       </div>
 
@@ -207,6 +245,7 @@
 
     let catalogData = [];
     let currentFilterTag = 'ALL';
+    let currentActiveItem = null;
 
     function haptic() {
       try {
@@ -239,21 +278,7 @@
         const res = await fetch('catalog.json?' + new Date().getTime());
         catalogData = await res.json();
       } catch (e) {
-        console.warn('載入 catalog.json 失敗，使用內建備份數據');
-        catalogData = [
-          {
-            id: 14580,
-            title: "【秀人網】美杜莎 4K 高畫質私密合輯",
-            blogger: "美杜莎",
-            search_kw: "美杜莎",
-            tags: ["#秀人網", "#美杜莎", "#4K原片", "#無碼流出"],
-            preview_desc: "超絕極品私房無碼實拍流出，高畫質完整視覺衝擊，身段極致曲線畢露！",
-            pikpak_url: "https://mypikpak.com/drive/activity/invited?invitation-code=54949222",
-            jisou_url: "https://t.me/jisou2?start=a_1251504388",
-            video_count: 3,
-            created_at: "2026-11-10 08:00"
-          }
-        ];
+        console.warn('載入 catalog.json 失敗');
       }
       renderGrid();
     }
@@ -267,10 +292,19 @@
       container.innerHTML = '';
 
       const filtered = catalogData.filter(item => {
-        const matchTag = (currentFilterTag === 'ALL') || 
-          (item.tags && item.tags.some(t => t.includes(currentFilterTag))) ||
-          (item.blogger && item.blogger.includes(currentFilterTag));
-        
+        let matchTag = false;
+        if (currentFilterTag === 'ALL') {
+          matchTag = true;
+        } else if (currentFilterTag === 'OnlyFans') {
+          matchTag = (item.category === 'OnlyFans') || 
+            (item.tags && item.tags.some(t => /onlyfans|myfans|candfans|fansly|of/i.test(t))) ||
+            /onlyfans|myfans|candfans|fansly/i.test(item.title);
+        } else {
+          matchTag = (item.category === currentFilterTag) || 
+            (item.tags && item.tags.some(t => t.includes(currentFilterTag))) ||
+            (item.blogger && item.blogger.includes(currentFilterTag));
+        }
+
         const matchQuery = !query || 
           item.title.toLowerCase().includes(query) ||
           item.blogger.toLowerCase().includes(query) ||
@@ -293,6 +327,9 @@
         card.className = "group glass-card rounded-2xl p-2.5 border border-brand-border hover:border-amber-500/40 transition-all cursor-pointer flex flex-col justify-between";
         card.onclick = () => openDetail(item);
 
+        const isOF = item.category === 'OnlyFans' || /onlyfans|myfans|candfans/i.test(item.title);
+        const badgeColor = isOF ? 'bg-[#00aff0]/20 text-[#00aff0] border-[#00aff0]/30' : 'bg-amber-400/20 text-amber-300 border-amber-400/30';
+
         const coverSrc = item.cover_url || '';
         const coverHtml = coverSrc ? `
           <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden mb-2 bg-slate-900 shadow-inner">
@@ -302,21 +339,21 @@
                  loading="lazy"
                  onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center bg-slate-800 text-xs text-zinc-500 font-bold\\'>4K 高清原片</div>';" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20"></div>
-            <span class="absolute top-1.5 left-1.5 text-[10px] font-bold text-amber-300 bg-black/70 backdrop-blur-md px-1.5 py-0.5 rounded border border-amber-400/30">
-              ${item.blogger || '精選'}
+            <span class="absolute top-1.5 left-1.5 text-[10px] font-bold ${badgeColor} backdrop-blur-md px-1.5 py-0.5 rounded border">
+              ${isOF ? '💎 OnlyFans' : (item.blogger || '精選')}
             </span>
-            <span class="absolute bottom-1.5 right-1.5 text-[9px] text-zinc-200 bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded font-mono">
-              ${item.video_count > 1 ? `🎬 ${item.video_count}部合集` : '📹 原片'}
+            <span class="absolute bottom-1.5 right-1.5 text-[9px] text-zinc-200 bg-black/80 backdrop-blur-md px-1 py-0.5 rounded font-mono">
+              ${item.video_count > 1 ? `🎬 ${item.video_count}部合集` : '📹 在線試看'}
             </span>
           </div>
         ` : `
           <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden mb-2 bg-gradient-to-br from-indigo-950 via-slate-900 to-rose-950 flex items-center justify-center border border-white/5 shadow-inner">
             <span class="text-2xl">🔞</span>
-            <span class="absolute top-1.5 left-1.5 text-[10px] font-bold text-amber-300 bg-black/70 backdrop-blur-md px-1.5 py-0.5 rounded">
-              ${item.blogger || '精選'}
+            <span class="absolute top-1.5 left-1.5 text-[10px] font-bold ${badgeColor} backdrop-blur-md px-1.5 py-0.5 rounded border">
+              ${isOF ? '💎 OnlyFans' : (item.blogger || '精選')}
             </span>
-            <span class="absolute bottom-1.5 right-1.5 text-[9px] text-zinc-200 bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded font-mono">
-              ${item.video_count > 1 ? `🎬 ${item.video_count}部` : '📹 原片'}
+            <span class="absolute bottom-1.5 right-1.5 text-[9px] text-zinc-200 bg-black/80 backdrop-blur-md px-1 py-0.5 rounded font-mono">
+              ${item.video_count > 1 ? `🎬 ${item.video_count}部` : '📹 在線試看'}
             </span>
           </div>
         `;
@@ -329,7 +366,9 @@
           </div>
           <div class="pt-1.5 border-t border-white/5 flex items-center justify-between">
             <span class="text-[9px] text-zinc-500">${item.created_at || '最新'}</span>
-            <span class="text-[10px] font-bold text-amber-400">點此播放 ➔</span>
+            <span class="text-[10px] font-bold text-rose-400 flex items-center gap-0.5">
+              <span>▶</span> 在線播放
+            </span>
           </div>
         `;
         container.appendChild(card);
@@ -338,20 +377,31 @@
 
     function openDetail(item) {
       haptic();
+      currentActiveItem = item;
+
+      // 重置播放器
+      const player = document.getElementById('modalVideoPlayer');
+      const coverContainer = document.getElementById('modalCoverContainer');
+      player.pause();
+      player.removeAttribute('src');
+      player.load();
+      player.classList.add('hidden');
+      coverContainer.classList.remove('hidden');
+
+      const coverImg = document.getElementById('modalCoverImg');
+      if (item.cover_url) {
+        coverImg.src = item.cover_url;
+        coverImg.classList.remove('hidden');
+      } else {
+        coverImg.classList.add('hidden');
+      }
+
+      document.getElementById('modalCategory').innerText = item.category || '精選推薦';
       document.getElementById('modalTitle').innerText = item.title;
       document.getElementById('modalBlogger').innerText = `博主：${item.blogger}`;
       document.getElementById('modalTime').innerText = item.created_at || '最新上架';
       document.getElementById('modalDesc').innerText = item.preview_desc;
       document.getElementById('modalBadge').innerText = item.video_count > 1 ? `包含 ${item.video_count} 部高畫質原檔` : '4K 原畫完整無碼';
-
-      const modalBg = document.getElementById('modalBg');
-      if (item.cover_url) {
-        modalBg.style.backgroundImage = `url('${item.cover_url}')`;
-        modalBg.style.opacity = '0.7';
-      } else {
-        modalBg.style.backgroundImage = 'none';
-        modalBg.style.opacity = '0.3';
-      }
 
       const tagsContainer = document.getElementById('modalTags');
       tagsContainer.innerHTML = (item.tags || []).map(t => 
@@ -380,15 +430,42 @@
       document.getElementById('detailModal').classList.remove('hidden');
     }
 
-    document.getElementById('closeModal').onclick = () => {
+    function startVideoPlayback() {
       haptic();
+      if (!currentActiveItem) return;
+      const player = document.getElementById('modalVideoPlayer');
+      const coverContainer = document.getElementById('modalCoverContainer');
+
+      const videoUrl = currentActiveItem.video_url || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+
+      player.src = videoUrl;
+      player.classList.remove('hidden');
+      coverContainer.classList.add('hidden');
+      
+      player.play().then(() => {
+        showToast('🎬 開始播放高清在線預覽！');
+      }).catch(err => {
+        console.warn('播放被攔截或需要點擊播放控件:', err);
+      });
+    }
+
+    function closeModal() {
+      haptic();
+      const player = document.getElementById('modalVideoPlayer');
+      const coverContainer = document.getElementById('modalCoverContainer');
+      player.pause();
+      player.removeAttribute('src');
+      player.load();
+      player.classList.add('hidden');
+      coverContainer.classList.remove('hidden');
       document.getElementById('detailModal').classList.add('hidden');
-    };
+    }
+
+    document.getElementById('closeModal').onclick = closeModal;
 
     document.getElementById('detailModal').onclick = (e) => {
       if (e.target.id === 'detailModal') {
-        haptic();
-        document.getElementById('detailModal').classList.add('hidden');
+        closeModal();
       }
     };
 
@@ -397,11 +474,15 @@
       pill.onclick = () => {
         haptic();
         document.querySelectorAll('.tag-pill').forEach(p => {
-          p.classList.remove('bg-amber-500', 'text-black', 'shadow-md', 'shadow-amber-500/20');
-          p.classList.add('bg-[#131b2e]', 'text-zinc-300', 'border', 'border-brand-border');
+          const tag = p.getAttribute('data-tag');
+          if (tag === 'OnlyFans') {
+            p.className = 'tag-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#00aff0]/15 text-[#00aff0] border border-[#00aff0]/40 flex-shrink-0 flex items-center gap-1 shadow-sm';
+          } else {
+            p.className = 'tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border flex-shrink-0';
+          }
         });
-        pill.classList.remove('bg-[#131b2e]', 'text-zinc-300', 'border', 'border-brand-border');
-        pill.classList.add('bg-amber-500', 'text-black', 'shadow-md', 'shadow-amber-500/20');
+
+        pill.className = 'tag-pill active px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500 text-black shadow-md shadow-amber-500/20 flex-shrink-0 flex items-center gap-1';
 
         currentFilterTag = pill.getAttribute('data-tag');
         renderGrid();
