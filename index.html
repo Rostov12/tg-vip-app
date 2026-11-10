@@ -120,7 +120,7 @@
     </div>
 
     <!-- 瀑布流/網格卡片容器 -->
-    <div id="gridContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div id="gridContainer" class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
       <!-- 卡片由 JS 動態注入 -->
     </div>
 
@@ -290,32 +290,46 @@
 
       filtered.forEach(item => {
         const card = document.createElement('div');
-        card.className = "glass-card rounded-2xl p-3 border border-brand-border hover:border-amber-500/40 transition-all cursor-pointer flex flex-col justify-between";
+        card.className = "group glass-card rounded-2xl p-2.5 border border-brand-border hover:border-amber-500/40 transition-all cursor-pointer flex flex-col justify-between";
         card.onclick = () => openDetail(item);
 
-        const tagsHtml = (item.tags || []).slice(0, 3).map(t => 
-          `<span class="text-[10px] px-1.5 py-0.5 rounded bg-black/40 text-zinc-400 border border-white/5">${t}</span>`
-        ).join(' ');
+        const coverSrc = item.cover_url || '';
+        const coverHtml = coverSrc ? `
+          <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden mb-2 bg-slate-900 shadow-inner">
+            <img src="${coverSrc}" 
+                 alt="${item.title}" 
+                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+                 loading="lazy"
+                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center bg-slate-800 text-xs text-zinc-500 font-bold\\'>4K 高清原片</div>';" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20"></div>
+            <span class="absolute top-1.5 left-1.5 text-[10px] font-bold text-amber-300 bg-black/70 backdrop-blur-md px-1.5 py-0.5 rounded border border-amber-400/30">
+              ${item.blogger || '精選'}
+            </span>
+            <span class="absolute bottom-1.5 right-1.5 text-[9px] text-zinc-200 bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded font-mono">
+              ${item.video_count > 1 ? `🎬 ${item.video_count}部合集` : '📹 原片'}
+            </span>
+          </div>
+        ` : `
+          <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden mb-2 bg-gradient-to-br from-indigo-950 via-slate-900 to-rose-950 flex items-center justify-center border border-white/5 shadow-inner">
+            <span class="text-2xl">🔞</span>
+            <span class="absolute top-1.5 left-1.5 text-[10px] font-bold text-amber-300 bg-black/70 backdrop-blur-md px-1.5 py-0.5 rounded">
+              ${item.blogger || '精選'}
+            </span>
+            <span class="absolute bottom-1.5 right-1.5 text-[9px] text-zinc-200 bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded font-mono">
+              ${item.video_count > 1 ? `🎬 ${item.video_count}部` : '📹 原片'}
+            </span>
+          </div>
+        `;
 
         card.innerHTML = `
           <div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-[11px] font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/20">
-                ${item.blogger || '精選推薦'}
-              </span>
-              <span class="text-[10px] text-zinc-500 font-mono">${item.video_count > 1 ? `🎬 ${item.video_count}部合集` : '📹 單篇原片'}</span>
-            </div>
-            <h3 class="text-xs font-bold text-white mb-1.5 line-clamp-1">${item.title}</h3>
-            <p class="text-[11px] text-zinc-400 line-clamp-2 leading-relaxed mb-2">${item.preview_desc}</p>
+            ${coverHtml}
+            <h3 class="text-xs font-bold text-white mb-1 line-clamp-1 leading-snug group-hover:text-amber-400 transition-colors">${item.title}</h3>
+            <p class="text-[10px] text-zinc-400 line-clamp-1 mb-1.5">${item.preview_desc}</p>
           </div>
-          <div>
-            <div class="flex flex-wrap gap-1 mb-2.5">${tagsHtml}</div>
-            <div class="flex items-center justify-between pt-2 border-t border-white/5">
-              <span class="text-[10px] text-zinc-500">${item.created_at || '最新'}</span>
-              <span class="text-[11px] font-bold text-amber-400 flex items-center gap-0.5">
-                點擊查看 ➔
-              </span>
-            </div>
+          <div class="pt-1.5 border-t border-white/5 flex items-center justify-between">
+            <span class="text-[9px] text-zinc-500">${item.created_at || '最新'}</span>
+            <span class="text-[10px] font-bold text-amber-400">點此播放 ➔</span>
           </div>
         `;
         container.appendChild(card);
@@ -329,6 +343,15 @@
       document.getElementById('modalTime').innerText = item.created_at || '最新上架';
       document.getElementById('modalDesc').innerText = item.preview_desc;
       document.getElementById('modalBadge').innerText = item.video_count > 1 ? `包含 ${item.video_count} 部高畫質原檔` : '4K 原畫完整無碼';
+
+      const modalBg = document.getElementById('modalBg');
+      if (item.cover_url) {
+        modalBg.style.backgroundImage = `url('${item.cover_url}')`;
+        modalBg.style.opacity = '0.7';
+      } else {
+        modalBg.style.backgroundImage = 'none';
+        modalBg.style.opacity = '0.3';
+      }
 
       const tagsContainer = document.getElementById('modalTags');
       tagsContainer.innerHTML = (item.tags || []).map(t => 
