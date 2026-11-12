@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>身心保健 ｜ 專屬福利資源庫</title>
+  <title>身心保健 ｜ PikPak 雲端專屬資源庫</title>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- Tailwind CSS -->
@@ -17,6 +17,7 @@
               gold: '#f59e0b',
               neon: '#ec4899',
               of: '#00aff0',
+              pikpak: '#2563eb',
               dark: '#0b0f19',
               card: '#131b2e',
               border: '#1e293b'
@@ -40,14 +41,14 @@
     .gold-gradient {
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     }
+    .pikpak-gradient {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    }
     .glass-card {
-      background: rgba(19, 27, 46, 0.85);
+      background: rgba(19, 27, 46, 0.88);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    video {
-      background-color: #000;
     }
   </style>
 </head>
@@ -57,64 +58,70 @@
   <header class="sticky top-0 z-40 bg-[#0b0f19]/95 backdrop-blur-md border-b border-brand-border px-4 py-3">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-2">
-        <div class="w-8 h-8 rounded-full gold-gradient flex items-center justify-center font-black text-black text-sm shadow-lg shadow-amber-500/20">
-          🔞
+        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-black text-white text-sm shadow-lg shadow-blue-500/20">
+          ☁️
         </div>
         <div>
-          <h1 class="text-base font-bold text-white tracking-wide">身心保健・專屬資源庫</h1>
-          <p class="text-[11px] text-zinc-400">每日 4K 無碼原片・在線秒播試看</p>
+          <h1 class="text-base font-bold text-white tracking-wide">身心保健・PikPak 雲端專屬庫</h1>
+          <p class="text-[11px] text-zinc-400">海量完整合集原檔・PikPak 網盤一鍵轉存秒播</p>
         </div>
       </div>
-      <a href="https://t.me/+BOERCyv4q7Y1NzM1" target="_blank" class="px-2.5 py-1 text-xs rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-medium">
-        大本營 ↗
+      <a href="https://t.me/shenxin_club" target="_blank" class="px-2.5 py-1 text-xs rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium hover:bg-blue-500/20 transition-colors">
+        交流大本營 ↗
       </a>
     </div>
 
-    <!-- 搜索欄 -->
+    <!-- 搜索欄 (支援標題、博主名、標籤、貼文內文全文檢索) -->
     <div class="mt-3 relative">
-      <input type="text" id="searchInput" placeholder="搜尋 模特名、OnlyFans、MyFans、標籤..." 
-             class="w-full bg-[#131b2e] border border-brand-border rounded-xl px-9 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500 transition-all">
+      <input type="text" id="searchInput" placeholder="搜尋 模特名、標籤、貼文內文關鍵詞..." 
+             class="w-full bg-[#131b2e] border border-brand-border rounded-xl pl-9 pr-8 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all">
       <svg class="w-4 h-4 text-zinc-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
       </svg>
       <button id="clearSearch" class="hidden absolute right-3 top-2 text-xs text-zinc-400 hover:text-white">✕</button>
     </div>
 
-    <!-- 頂部清晰分類導航 (OnlyFans / MyFans / 推特 / 秀人 / 其他平台) -->
-    <div class="mt-2.5 flex space-x-2 overflow-x-auto custom-scroll py-1" id="tagPills">
-      <button data-tag="ALL" class="tag-pill active px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500 text-black shadow-md shadow-amber-500/20 flex-shrink-0 flex items-center gap-1">
-        <span>🔥</span> 全部精選
+    <!-- 主類別分類導航 (All / OnlyFans / MyFans / 推特 / 秀人 / 其他平台) -->
+    <div class="mt-2.5 flex space-x-2 overflow-x-auto custom-scroll py-1" id="categoryPills">
+      <button data-cat="ALL" class="cat-pill active px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/30 flex-shrink-0 flex items-center gap-1">
+        <span>🔥</span> 全部合集
       </button>
-      <button data-tag="OnlyFans" class="tag-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#00aff0]/15 text-[#00aff0] border border-[#00aff0]/40 flex-shrink-0 flex items-center gap-1 shadow-sm">
+      <button data-cat="OnlyFans" class="cat-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-[#00aff0] border border-[#00aff0]/30 flex-shrink-0 flex items-center gap-1">
         <span>💎</span> OnlyFans
       </button>
-      <button data-tag="MyFans" class="tag-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#ec4899]/15 text-[#ec4899] border border-[#ec4899]/40 flex-shrink-0 flex items-center gap-1 shadow-sm">
+      <button data-cat="MyFans" class="cat-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-[#ec4899] border border-[#ec4899]/30 flex-shrink-0 flex items-center gap-1">
         <span>🍒</span> MyFans
       </button>
-      <button data-tag="推特" class="tag-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/40 flex-shrink-0 flex items-center gap-1 shadow-sm">
+      <button data-cat="推特" class="cat-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-[#1d9bf0] border border-[#1d9bf0]/30 flex-shrink-0 flex items-center gap-1">
         <span>🐦</span> 推特
       </button>
-      <button data-tag="秀人寫真" class="tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border flex-shrink-0 flex items-center gap-1">
+      <button data-cat="秀人寫真" class="cat-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-amber-400 border border-amber-400/30 flex-shrink-0 flex items-center gap-1">
         <span>👑</span> 秀人寫真
       </button>
-      <button data-tag="其他平台" class="tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border flex-shrink-0 flex items-center gap-1">
+      <button data-cat="其他平台" class="cat-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-purple-400 border border-purple-400/30 flex-shrink-0 flex items-center gap-1">
         <span>📦</span> 其他平台
       </button>
     </div>
+
+    <!-- 熱門標籤快速篩選列 (動態生成) -->
+    <div class="mt-2 flex space-x-1.5 overflow-x-auto custom-scroll py-0.5" id="tagPills">
+      <!-- 由 JS 動態注入熱門標籤 -->
+    </div>
   </header>
 
-  <!-- 置頂提示橫幅 (無廣告純享) -->
+  <!-- 置頂提示橫幅 (PikPak 雲端專屬特性說明) -->
   <section class="px-4 mt-3">
-    <div class="glass-card rounded-2xl p-3 border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-rose-500/5 to-transparent flex items-center justify-between">
+    <div class="glass-card rounded-2xl p-3 border border-blue-500/20 bg-gradient-to-r from-blue-600/10 via-indigo-600/5 to-transparent flex items-center justify-between">
       <div class="flex items-center space-x-2.5">
-        <div class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-base">
-          🎬
+        <div class="w-8 h-8 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-base">
+          ⚡
         </div>
         <div>
-          <div class="text-xs font-bold text-amber-300">高清在線試看專區</div>
-          <div class="text-[11px] text-zinc-400">點擊任意卡片即可在線播放片段・找完整版請善用極搜</div>
+          <div class="text-xs font-bold text-blue-300">PikPak 官方雲端直連庫</div>
+          <div class="text-[11px] text-zinc-400">點擊卡片查看完整貼文與標籤，一鍵高速轉存個人網盤</div>
         </div>
       </div>
+      <span class="text-[10px] text-zinc-400 bg-white/5 px-2 py-0.5 rounded-full border border-white/10" id="sourceBadge">來源：精品收藏</span>
     </div>
   </section>
 
@@ -122,10 +129,10 @@
   <main class="px-4 mt-4">
     <div class="flex items-center justify-between mb-2.5">
       <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-        實時上架資源 (<span id="itemCount">0</span>)
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+        已收錄網盤資源 (<span id="itemCount">0</span>)
       </h2>
-      <span class="text-[11px] text-zinc-500">支援在線試看・原畫無碼</span>
+      <span class="text-[11px] text-zinc-500">免下載・一鍵轉存秒播</span>
     </div>
 
     <!-- 雙列海報網格 -->
@@ -136,72 +143,86 @@
     <!-- 空狀態 -->
     <div id="emptyState" class="hidden py-16 text-center text-zinc-500">
       <div class="text-3xl mb-2">🔍</div>
-      <p class="text-xs">找不到相關資源，換個關鍵詞或切換標籤試試吧！</p>
+      <p class="text-xs">找不到符合條件的資源，請換個關鍵詞或重置標籤！</p>
+      <button onclick="resetFilters()" class="mt-3 px-3 py-1 rounded-full bg-blue-600/20 text-blue-400 text-xs border border-blue-500/30">
+        重置所有篩選
+      </button>
     </div>
   </main>
 
-  <!-- 詳情與影片在線播放彈窗 (Video Player Modal) -->
+  <!-- 詳情彈窗 (Resource Detail Modal) -->
   <div id="detailModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
     <div class="w-full max-w-lg bg-[#131b2e] rounded-t-3xl sm:rounded-3xl border border-brand-border overflow-hidden max-h-[92vh] flex flex-col shadow-2xl">
       
-      <!-- 頂部視訊播放器區 -->
-      <div class="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
-        <!-- 原生 HTML5 播放器 (100% 相容各終端，支援手動點擊秒播) -->
-        <video id="modalVideoPlayer" 
-               class="w-full h-full object-contain bg-black" 
-               controls 
-               playsinline 
-               webkit-playsinline 
-               preload="metadata">
-        </video>
+      <!-- 頂部寫真封面預覽區 (支援多圖預覽切換) -->
+      <div class="relative w-full aspect-[16/10] bg-black flex items-center justify-center overflow-hidden">
+        <img id="modalCover" src="" alt="資源封面" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#131b2e] via-transparent to-black/40"></div>
         
+        <!-- 多圖預覽切換導航點 -->
+        <div id="modalGalleryDots" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1.5 z-20"></div>
+
         <button id="closeModal" class="absolute top-3 right-3 z-30 w-8 h-8 rounded-full bg-black/70 text-white flex items-center justify-center text-sm border border-white/20 shadow-lg">✕</button>
       </div>
 
       <!-- 詳情內文 -->
       <div class="p-4 overflow-y-auto custom-scroll space-y-3 flex-1">
         <div>
-          <div class="flex items-center gap-1.5 mb-1">
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/30" id="modalCategory">分類</span>
-            <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">⚡ 支援在線試看</span>
+          <div class="flex items-center gap-1.5 mb-1.5 flex-wrap">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30" id="modalCategory">分類</span>
+            <span class="text-[10px] text-zinc-300 bg-white/5 px-2 py-0.5 rounded-full border border-white/10" id="modalChannel">來源：精品收藏</span>
+            <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20" id="modalSpec">📦 完整合集</span>
           </div>
           <h3 class="text-sm font-bold text-white leading-snug" id="modalTitle">標題載入中...</h3>
           <div class="flex items-center space-x-2 mt-1">
-            <span class="text-xs text-amber-400 font-semibold" id="modalBlogger">模特名</span>
+            <span class="text-xs text-blue-400 font-semibold" id="modalBlogger">博主名</span>
             <span class="text-zinc-600">•</span>
             <span class="text-[11px] text-zinc-400" id="modalTime">2026-11-10</span>
           </div>
         </div>
 
+        <!-- 貼文完整內文展示區 -->
         <div class="bg-black/40 rounded-xl p-3 border border-white/5">
-          <div class="text-[11px] text-zinc-400 font-medium mb-1">私密看點：</div>
-          <p class="text-xs text-zinc-300 leading-relaxed" id="modalDesc"></p>
+          <div class="text-[11px] text-zinc-400 font-medium mb-1 flex items-center justify-between">
+            <span>📝 來源貼文完整內文：</span>
+            <button id="btnCopyText" class="text-[10px] text-blue-400 hover:underline">複製內文</button>
+          </div>
+          <div class="text-xs text-zinc-200 leading-relaxed whitespace-pre-wrap font-sans" id="modalRawText"></div>
         </div>
 
+        <!-- 標籤分類（點擊可直接篩選） -->
         <div>
-          <div class="text-[11px] text-zinc-400 mb-1.5 font-medium">標籤分類：</div>
+          <div class="text-[11px] text-zinc-400 mb-1.5 font-medium">🏷️ 標籤分類（點擊直接篩選）：</div>
           <div class="flex flex-wrap gap-1.5" id="modalTags"></div>
         </div>
 
-        <!-- 試看提示橫幅 -->
-        <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-2.5 text-[11px] text-amber-300/90 flex items-start gap-2">
-          <span>💡</span>
-          <div>
-            上面窗口正在播放高清在線預覽片段。若想獲取該博主<b>完整無碼長篇（數 GB 高清原檔）</b>，請點擊下方按鈕直接開啟極搜！
+        <!-- 提取碼提示卡 -->
+        <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-2.5 text-[11px] text-blue-300 flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span>🔑</span>
+            <span>博主專屬提取碼/口令：<b id="modalCode" class="text-white font-mono"></b></span>
           </div>
+          <button id="btnCopyCode" class="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-bold">複製</button>
         </div>
       </div>
 
-      <!-- 底部行動按鈕區 -->
+      <!-- 底部核心行動按鈕區 -->
       <div class="p-3 bg-[#0b0f19] border-t border-brand-border space-y-2">
-        <button id="btnJisou" 
-           class="w-full py-3 rounded-xl gold-gradient text-black font-black text-xs flex items-center justify-center space-x-1.5 shadow-lg shadow-amber-500/20 active:scale-95 transition-transform">
-          <span>🔍 極搜查同款完整版（點此複製搜詞並開啟）</span>
+        <button id="btnPikPakDirect" 
+           class="w-full py-3 rounded-xl pikpak-gradient text-white font-black text-xs flex items-center justify-center space-x-1.5 shadow-lg shadow-blue-600/30 active:scale-95 transition-transform">
+          <span>🚀 一鍵轉存 PikPak 網盤（直連開啟）</span>
         </button>
-        <a href="https://t.me/+BOERCyv4q7Y1NzM1" target="_blank" 
-           class="block w-full py-2.5 rounded-xl bg-[#1e293b] text-zinc-300 text-center text-xs font-medium border border-white/5 hover:text-white">
-          💬 加入官方交流討論大本營防失聯 ↗
-        </a>
+        
+        <div class="grid grid-cols-2 gap-2">
+          <button id="btnCopyUrl" 
+             class="py-2.5 rounded-xl bg-[#131b2e] text-zinc-300 text-center text-xs font-medium border border-white/10 hover:text-white">
+            📋 複製網盤直連網址
+          </button>
+          <button id="btnJisouSearch" 
+             class="py-2.5 rounded-xl bg-[#1e293b] text-amber-400 text-center text-xs font-medium border border-amber-500/20 hover:text-amber-300">
+            🔍 極搜查全網同款
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -224,8 +245,10 @@
     }
 
     let catalogData = [];
-    let currentFilterTag = 'ALL';
+    let currentCategory = 'ALL';
+    let currentTag = 'ALL';
     let currentActiveItem = null;
+    let popularTags = [];
 
     function haptic() {
       try {
@@ -244,13 +267,84 @@
       }, 2000);
     }
 
+    // 載入資料
     async function loadCatalog() {
       try {
         const res = await fetch('catalog.json?' + new Date().getTime());
         catalogData = await res.json();
       } catch (e) {
-        console.warn('載入 catalog.json 失敗');
+        console.warn('載入 catalog.json 失敗:', e);
       }
+      buildTagList();
+      renderGrid();
+    }
+
+    // 統計並建立熱門標籤列表
+    function buildTagList() {
+      const tagMap = {};
+      catalogData.forEach(item => {
+        (item.tags || []).forEach(t => {
+          if (!t) return;
+          const clean = t.trim();
+          tagMap[clean] = (tagMap[clean] || 0) + 1;
+        });
+      });
+
+      // 排序前 15 大熱門標籤
+      popularTags = Object.entries(tagMap)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 16)
+        .map(entry => entry[0]);
+
+      const tagContainer = document.getElementById('tagPills');
+      let html = `<button data-tag="ALL" class="tag-chip active px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/20 text-white flex-shrink-0">全部標籤</button>`;
+      
+      popularTags.forEach(t => {
+        html += `<button data-tag="${t}" class="tag-chip px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#131b2e] text-zinc-400 border border-brand-border flex-shrink-0 hover:text-white">${t}</button>`;
+      });
+
+      tagContainer.innerHTML = html;
+
+      // 綁定標籤點擊事件
+      tagContainer.querySelectorAll('.tag-chip').forEach(btn => {
+        btn.onclick = () => {
+          haptic();
+          tagContainer.querySelectorAll('.tag-chip').forEach(b => {
+            b.className = 'tag-chip px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#131b2e] text-zinc-400 border border-brand-border flex-shrink-0 hover:text-white';
+          });
+          btn.className = 'tag-chip active px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/20 text-white flex-shrink-0';
+          currentTag = btn.getAttribute('data-tag');
+          renderGrid();
+        };
+      });
+    }
+
+    function resetFilters() {
+      haptic();
+      currentCategory = 'ALL';
+      currentTag = 'ALL';
+      document.getElementById('searchInput').value = '';
+      document.getElementById('clearSearch').classList.add('hidden');
+
+      // 重置分類按鈕
+      document.querySelectorAll('.cat-pill').forEach(p => {
+        if (p.getAttribute('data-cat') === 'ALL') {
+          p.className = 'cat-pill active px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/30 flex-shrink-0 flex items-center gap-1';
+        } else {
+          p.className = 'cat-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-400 border border-brand-border flex-shrink-0 flex items-center gap-1';
+        }
+      });
+
+      // 重置標籤按鈕
+      const tagContainer = document.getElementById('tagPills');
+      tagContainer.querySelectorAll('.tag-chip').forEach(b => {
+        if (b.getAttribute('data-tag') === 'ALL') {
+          b.className = 'tag-chip active px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/20 text-white flex-shrink-0';
+        } else {
+          b.className = 'tag-chip px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#131b2e] text-zinc-400 border border-brand-border flex-shrink-0 hover:text-white';
+        }
+      });
+
       renderGrid();
     }
 
@@ -263,42 +357,52 @@
       container.innerHTML = '';
 
       const filtered = catalogData.filter(item => {
-        let matchTag = false;
-        if (currentFilterTag === 'ALL') {
-          matchTag = true;
-        } else if (currentFilterTag === 'OnlyFans') {
-          matchTag = (item.category === 'OnlyFans') || 
-            (item.tags && item.tags.some(t => /onlyfans|fansly|of/i.test(t))) ||
+        // 1. 平台分類篩選
+        let matchCat = false;
+        if (currentCategory === 'ALL') {
+          matchCat = true;
+        } else if (currentCategory === 'OnlyFans') {
+          matchCat = (item.category === 'OnlyFans') || 
+            (item.tags && item.tags.some(t => /onlyfans|fansly/i.test(t))) ||
             /onlyfans|fansly/i.test(item.title);
-        } else if (currentFilterTag === 'MyFans') {
-          matchTag = (item.category === 'MyFans') || 
+        } else if (currentCategory === 'MyFans') {
+          matchCat = (item.category === 'MyFans') || 
             (item.tags && item.tags.some(t => /myfans|candfans|fantia|fc2/i.test(t))) ||
             /myfans|candfans|fc2/i.test(item.title);
-        } else if (currentFilterTag === '推特') {
-          matchTag = (item.category === '推特') || 
+        } else if (currentCategory === '推特') {
+          matchCat = (item.category === '推特') || 
             (item.tags && item.tags.some(t => /推特|twitter|推友/i.test(t))) ||
             /推特|twitter/i.test(item.title);
-        } else if (currentFilterTag === '秀人寫真') {
-          matchTag = (item.category === '秀人寫真') || 
+        } else if (currentCategory === '秀人寫真') {
+          matchCat = (item.category === '秀人寫真') || 
             (item.tags && item.tags.some(t => /秀人|蜜桃|尤果/i.test(t))) ||
             /秀人|蜜桃/i.test(item.title);
-        } else if (currentFilterTag === '其他平台') {
-          matchTag = (item.category === '其他平台') || 
-            (item.tags && item.tags.some(t => /其他|合集|91|麻豆/i.test(t))) ||
-            /合集|91/i.test(item.title);
+        } else if (currentCategory === '其他平台') {
+          matchCat = (item.category === '其他平台') || 
+            (item.tags && item.tags.some(t => /其他|合集|pornhub|sp站|st站/i.test(t))) ||
+            /pornhub|合集/i.test(item.title);
         } else {
-          matchTag = (item.category === currentFilterTag) || 
-            (item.tags && item.tags.some(t => t.includes(currentFilterTag))) ||
-            (item.blogger && item.blogger.includes(currentFilterTag));
+          matchCat = (item.category === currentCategory);
         }
 
-        const matchQuery = !query || 
-          item.title.toLowerCase().includes(query) ||
-          item.blogger.toLowerCase().includes(query) ||
-          (item.tags && item.tags.some(t => t.toLowerCase().includes(query))) ||
-          item.preview_desc.toLowerCase().includes(query);
+        // 2. 標籤篩選
+        let matchTag = true;
+        if (currentTag !== 'ALL') {
+          matchTag = item.tags && item.tags.some(t => t.toLowerCase() === currentTag.toLowerCase());
+        }
 
-        return matchTag && matchQuery;
+        // 3. 關鍵字搜尋 (標題、博主、標籤、貼文內文全文)
+        let matchQuery = true;
+        if (query) {
+          const tMatch = item.title && item.title.toLowerCase().includes(query);
+          const bMatch = item.blogger && item.blogger.toLowerCase().includes(query);
+          const tagMatch = item.tags && item.tags.some(t => t.toLowerCase().includes(query));
+          const textMatch = item.raw_text && item.raw_text.toLowerCase().includes(query);
+          const descMatch = item.description && item.description.toLowerCase().includes(query);
+          matchQuery = tMatch || bMatch || tagMatch || textMatch || descMatch;
+        }
+
+        return matchCat && matchTag && matchQuery;
       });
 
       countEl.innerText = filtered.length;
@@ -311,11 +415,11 @@
 
       filtered.forEach(item => {
         const card = document.createElement('div');
-        card.className = "group glass-card rounded-2xl p-2.5 border border-brand-border hover:border-amber-500/40 transition-all cursor-pointer flex flex-col justify-between";
+        card.className = "group glass-card rounded-2xl p-2.5 border border-brand-border hover:border-blue-500/50 transition-all cursor-pointer flex flex-col justify-between";
         card.onclick = () => openDetail(item);
 
-        let badgeLabel = item.blogger || '精選';
-        let badgeColor = 'bg-amber-400/20 text-amber-300 border-amber-400/30';
+        let badgeLabel = item.category || '合集';
+        let badgeColor = 'bg-blue-500/20 text-blue-300 border-blue-400/30';
 
         if (item.category === 'OnlyFans') {
           badgeLabel = '💎 OnlyFans';
@@ -330,48 +434,56 @@
           badgeLabel = '👑 秀人';
           badgeColor = 'bg-amber-400/20 text-amber-300 border-amber-400/30';
         } else if (item.category === '其他平台') {
-          badgeLabel = '📦 其他平台';
+          badgeLabel = '📦 綜合合集';
           badgeColor = 'bg-purple-500/20 text-purple-300 border-purple-500/30';
         }
 
         const coverSrc = item.cover_url || '';
+        const chName = item.source_channel_name || '精品收藏';
+
         const coverHtml = coverSrc ? `
           <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden mb-2 bg-slate-900 shadow-inner">
             <img src="${coverSrc}" 
                  alt="${item.title}" 
                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
                  loading="lazy"
-                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center bg-slate-800 text-xs text-zinc-500 font-bold\\'>4K 高清原片</div>';" />
+                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center bg-slate-800 text-xs text-zinc-500 font-bold\\'>📦 PikPak 原檔合集</div>';" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20"></div>
-            <span class="absolute top-1.5 left-1.5 text-[10px] font-bold ${badgeColor} backdrop-blur-md px-1.5 py-0.5 rounded border">
+            <span class="absolute top-1.5 left-1.5 text-[9px] font-bold ${badgeColor} backdrop-blur-md px-1.5 py-0.5 rounded border">
               ${badgeLabel}
             </span>
-            <span class="absolute bottom-1.5 right-1.5 text-[9px] text-zinc-200 bg-black/80 backdrop-blur-md px-1 py-0.5 rounded font-mono">
-              ${item.video_count > 1 ? `🎬 ${item.video_count}部合集` : '📹 在線試看'}
+            <span class="absolute top-1.5 right-1.5 text-[9px] text-zinc-300 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded border border-white/10">
+              ${chName}
+            </span>
+            <span class="absolute bottom-1.5 right-1.5 text-[9px] text-blue-200 bg-blue-950/80 backdrop-blur-md px-1.5 py-0.5 rounded font-mono border border-blue-500/30">
+              ${item.video_count > 0 ? `🎬 ${item.video_count}部` : '📦 網盤合集'}
             </span>
           </div>
         ` : `
-          <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden mb-2 bg-gradient-to-br from-indigo-950 via-slate-900 to-rose-950 flex items-center justify-center border border-white/5 shadow-inner">
-            <span class="text-2xl">🔞</span>
-            <span class="absolute top-1.5 left-1.5 text-[10px] font-bold ${badgeColor} backdrop-blur-md px-1.5 py-0.5 rounded border">
+          <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden mb-2 bg-gradient-to-br from-blue-950 via-slate-900 to-indigo-950 flex items-center justify-center border border-white/5 shadow-inner">
+            <span class="text-2xl">📦</span>
+            <span class="absolute top-1.5 left-1.5 text-[9px] font-bold ${badgeColor} backdrop-blur-md px-1.5 py-0.5 rounded border">
               ${badgeLabel}
-            </span>
-            <span class="absolute bottom-1.5 right-1.5 text-[9px] text-zinc-200 bg-black/80 backdrop-blur-md px-1 py-0.5 rounded font-mono">
-              ${item.video_count > 1 ? `🎬 ${item.video_count}部` : '📹 在線試看'}
             </span>
           </div>
         `;
 
+        // 標籤前兩枚
+        const tagsPreview = (item.tags || []).slice(0, 2).map(t => 
+          `<span class="text-[9px] text-zinc-400 bg-white/5 px-1 rounded">${t}</span>`
+        ).join(' ');
+
         card.innerHTML = `
           <div>
             ${coverHtml}
-            <h3 class="text-xs font-bold text-white mb-1 line-clamp-1 leading-snug group-hover:text-amber-400 transition-colors">${item.title}</h3>
-            <p class="text-[10px] text-zinc-400 line-clamp-1 mb-1.5">${item.preview_desc}</p>
+            <h3 class="text-xs font-bold text-white mb-1 line-clamp-1 leading-snug group-hover:text-blue-400 transition-colors">${item.title}</h3>
+            <p class="text-[10px] text-zinc-400 line-clamp-1 mb-1.5">${item.description || item.raw_text || ''}</p>
+            <div class="flex flex-wrap gap-1 mb-1">${tagsPreview}</div>
           </div>
           <div class="pt-1.5 border-t border-white/5 flex items-center justify-between">
-            <span class="text-[9px] text-zinc-500">${item.created_at || '最新'}</span>
-            <span class="text-[10px] font-bold text-rose-400 flex items-center gap-0.5">
-              <span>▶</span> 在線播放
+            <span class="text-[9px] text-zinc-500">${item.blogger || '精選'}</span>
+            <span class="text-[10px] font-bold text-blue-400 flex items-center gap-0.5">
+              <span>☁️</span> 轉存網盤
             </span>
           </div>
         `;
@@ -383,85 +495,144 @@
       haptic();
       currentActiveItem = item;
 
-      // 重置並加載播放器
-      const player = document.getElementById('modalVideoPlayer');
-      player.pause();
-      player.poster = item.cover_url || '';
-      player.src = item.video_url || 'sample.mp4';
-      player.load();
+      // 封面大圖與多圖切換
+      const modalCover = document.getElementById('modalCover');
+      const dotsContainer = document.getElementById('modalGalleryDots');
+      const images = item.images && item.images.length > 0 ? item.images : (item.cover_url ? [item.cover_url] : []);
+      
+      dotsContainer.innerHTML = '';
+      if (images.length > 0) {
+        modalCover.src = images[0];
+        if (images.length > 1) {
+          images.forEach((img, idx) => {
+            const dot = document.createElement('button');
+            dot.className = `w-2 h-2 rounded-full ${idx === 0 ? 'bg-blue-500' : 'bg-white/40'} transition-all`;
+            dot.onclick = () => {
+              modalCover.src = img;
+              dotsContainer.querySelectorAll('button').forEach((b, i) => {
+                b.className = `w-2 h-2 rounded-full ${i === idx ? 'bg-blue-500' : 'bg-white/40'} transition-all`;
+              });
+            };
+            dotsContainer.appendChild(dot);
+          });
+        }
+      } else {
+        modalCover.src = '';
+      }
 
-      document.getElementById('modalCategory').innerText = item.category || '精選推薦';
+      document.getElementById('modalCategory').innerText = item.category || '精選合集';
+      document.getElementById('modalChannel').innerText = `來源：${item.source_channel_name || '精品收藏'}`;
+      document.getElementById('modalSpec').innerText = item.video_count > 0 ? `🎬 ${item.video_count}部影片 + ${item.photo_count}張寫真` : '📦 官方無碼合集';
       document.getElementById('modalTitle').innerText = item.title;
       document.getElementById('modalBlogger').innerText = `博主：${item.blogger}`;
       document.getElementById('modalTime').innerText = item.created_at || '最新上架';
-      document.getElementById('modalDesc').innerText = item.preview_desc;
+      
+      // 貼文內文
+      document.getElementById('modalRawText').innerText = item.raw_text || item.description || '暫無額外看點描述';
+      document.getElementById('modalCode').innerText = item.pikpak_code || item.blogger;
 
+      // 標籤渲染（點擊可直接觸發全庫篩選）
       const tagsContainer = document.getElementById('modalTags');
       tagsContainer.innerHTML = (item.tags || []).map(t => 
-        `<span class="text-[11px] px-2 py-0.5 rounded-full bg-white/5 text-zinc-300 border border-white/10">${t}</span>`
+        `<button onclick="filterByTagFromModal('${t}')" class="text-[11px] px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20 hover:bg-blue-500/30 transition-colors">${t}</button>`
       ).join('');
 
-      // 按鈕綁定
-      const btnJisou = document.getElementById('btnJisou');
-      btnJisou.onclick = (e) => {
-        e.preventDefault();
+      // 按鈕事件綁定
+      document.getElementById('btnPikPakDirect').onclick = () => {
         haptic();
-        const kw = item.search_kw || item.blogger;
-        navigator.clipboard.writeText(kw).then(() => {
-          showToast(`已複製搜詞「${kw}」，正在開啟極搜...`);
+        if (item.pikpak_url) {
+          showToast('正在開啟 PikPak 雲端轉存...');
           setTimeout(() => {
-            window.open(item.jisou_url || "https://t.me/jisou2?start=a_1251504388", "_blank");
-          }, 400);
-        }).catch(() => {
-          window.open(item.jisou_url || "https://t.me/jisou2?start=a_1251504388", "_blank");
+            window.open(item.pikpak_url, '_blank');
+          }, 300);
+        } else {
+          showToast('此項目未提供直接轉存網址');
+        }
+      };
+
+      document.getElementById('btnCopyUrl').onclick = () => {
+        haptic();
+        if (item.pikpak_url) {
+          navigator.clipboard.writeText(item.pikpak_url).then(() => {
+            showToast('已複製 PikPak 直連網址！');
+          });
+        }
+      };
+
+      document.getElementById('btnCopyCode').onclick = () => {
+        haptic();
+        const code = item.pikpak_code || item.blogger;
+        navigator.clipboard.writeText(code).then(() => {
+          showToast(`已複製提取碼「${code}」！`);
         });
+      };
+
+      document.getElementById('btnCopyText').onclick = () => {
+        haptic();
+        const text = item.raw_text || item.description || '';
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('已複製貼文完整內文！');
+        });
+      };
+
+      document.getElementById('btnJisouSearch').onclick = () => {
+        haptic();
+        const kw = item.blogger || item.title;
+        window.open(`https://t.me/jisou2?start=a_1251504388`, '_blank');
       };
 
       document.getElementById('detailModal').classList.remove('hidden');
     }
 
+    function filterByTagFromModal(tag) {
+      closeModal();
+      currentTag = tag;
+      
+      // 更新標籤欄狀態
+      const tagContainer = document.getElementById('tagPills');
+      let found = false;
+      tagContainer.querySelectorAll('.tag-chip').forEach(b => {
+        if (b.getAttribute('data-tag').toLowerCase() === tag.toLowerCase()) {
+          b.className = 'tag-chip active px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/20 text-white flex-shrink-0';
+          found = true;
+        } else {
+          b.className = 'tag-chip px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#131b2e] text-zinc-400 border border-brand-border flex-shrink-0 hover:text-white';
+        }
+      });
+      if (!found) {
+        // 如果不在前 15 標籤中，直接在搜尋框填入
+        document.getElementById('searchInput').value = tag;
+        document.getElementById('clearSearch').classList.remove('hidden');
+      }
+      renderGrid();
+    }
+
     function closeModal() {
       haptic();
-      const player = document.getElementById('modalVideoPlayer');
-      player.pause();
-      player.removeAttribute('src');
-      player.load();
       document.getElementById('detailModal').classList.add('hidden');
     }
 
     document.getElementById('closeModal').onclick = closeModal;
-
     document.getElementById('detailModal').onclick = (e) => {
       if (e.target.id === 'detailModal') {
         closeModal();
       }
     };
 
-    // 標籤切換
-    document.querySelectorAll('.tag-pill').forEach(pill => {
+    // 平台分類按鈕切換
+    document.querySelectorAll('.cat-pill').forEach(pill => {
       pill.onclick = () => {
         haptic();
-        document.querySelectorAll('.tag-pill').forEach(p => {
-          const tag = p.getAttribute('data-tag');
-          if (tag === 'OnlyFans') {
-            p.className = 'tag-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#00aff0]/15 text-[#00aff0] border border-[#00aff0]/40 flex-shrink-0 flex items-center gap-1 shadow-sm';
-          } else if (tag === 'MyFans') {
-            p.className = 'tag-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#ec4899]/15 text-[#ec4899] border border-[#ec4899]/40 flex-shrink-0 flex items-center gap-1 shadow-sm';
-          } else if (tag === '推特') {
-            p.className = 'tag-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/40 flex-shrink-0 flex items-center gap-1 shadow-sm';
-          } else {
-            p.className = 'tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-300 border border-brand-border flex-shrink-0 flex items-center gap-1';
-          }
+        document.querySelectorAll('.cat-pill').forEach(p => {
+          p.className = 'cat-pill px-3 py-1 rounded-full text-xs font-medium bg-[#131b2e] text-zinc-400 border border-brand-border flex-shrink-0 flex items-center gap-1';
         });
-
-        pill.className = 'tag-pill active px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500 text-black shadow-md shadow-amber-500/20 flex-shrink-0 flex items-center gap-1';
-
-        currentFilterTag = pill.getAttribute('data-tag');
+        pill.className = 'cat-pill active px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/30 flex-shrink-0 flex items-center gap-1';
+        currentCategory = pill.getAttribute('data-cat');
         renderGrid();
       };
     });
 
-    // 搜索監聽
+    // 搜尋輸入監聽
     const searchInput = document.getElementById('searchInput');
     const clearBtn = document.getElementById('clearSearch');
     searchInput.oninput = () => {
