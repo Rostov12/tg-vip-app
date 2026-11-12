@@ -6,12 +6,13 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>VIP 資源總庫管理控制台 - PikPak 雲端合集清單</title>
+  <title>VIP 資源總庫管理控制台 - 博主歸類與雲端清單</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --bg-dark: #0f172a;
       --bg-panel: #1e293b;
+      --bg-card: #182234;
       --bg-hover: #334155;
       --border-color: #334155;
       --text-main: #f8fafc;
@@ -36,7 +37,7 @@
       background-color: var(--bg-dark);
       color: var(--text-main);
       line-height: 1.5;
-      padding-bottom: 50px;
+      padding-bottom: 60px;
     }
 
     header {
@@ -92,8 +93,9 @@
     .stats-bar {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       font-size: 13px;
+      flex-wrap: wrap;
     }
 
     .stat-badge {
@@ -109,7 +111,7 @@
       font-weight: 700;
     }
 
-    /* 篩選控制面板 */
+    /* 篩選與控制面板 */
     .filter-section {
       max-width: 1400px;
       margin: 16px auto;
@@ -119,7 +121,7 @@
     .filter-card {
       background: var(--bg-panel);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 16px 20px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.25);
     }
@@ -170,16 +172,46 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
-      padding-top: 10px;
+      gap: 12px;
+      padding-top: 12px;
       border-top: 1px solid rgba(255,255,255,0.06);
     }
 
-    .btn-reset {
+    /* 檢視模式切換 Tab */
+    .view-mode-toggle {
+      display: inline-flex;
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .view-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .view-tab.active {
+      background: var(--accent-blue);
+      color: #0f172a;
+    }
+
+    .btn-action {
       background: transparent;
       border: 1px solid var(--border-color);
       color: var(--text-muted);
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 6px;
       font-size: 13px;
       cursor: pointer;
@@ -189,96 +221,238 @@
       transition: all 0.2s;
     }
 
-    .btn-reset:hover {
+    .btn-action:hover {
       background: var(--bg-hover);
       color: var(--text-main);
     }
 
-    .search-summary {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .search-summary span {
-      color: var(--accent-green);
-      font-weight: 700;
-    }
-
-    /* 清單列表主體 */
+    /* 清單主容器 */
     .list-container {
       max-width: 1400px;
       margin: 0 auto;
       padding: 0 16px;
     }
 
-    /* 桌面版表格樣式 */
-    .table-wrapper {
+    /* ===== 模式 A：博主歸類聚合卡片 (Grouped Accordion) ===== */
+    .blogger-group-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .blogger-card {
       background: var(--bg-panel);
       border: 1px solid var(--border-color);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      transition: border-color 0.2s;
     }
 
-    table.data-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 14px;
+    .blogger-card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
     }
 
-    table.data-table th {
-      background: #182234;
-      padding: 12px 16px;
-      font-weight: 600;
-      color: var(--text-muted);
-      border-bottom: 1px solid var(--border-color);
-      white-space: nowrap;
+    /* 博主聚合主列 Header */
+    .blogger-header {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      cursor: pointer;
+      user-select: none;
+      background: linear-gradient(90deg, rgba(30, 41, 59, 0.8) 0%, rgba(24, 34, 52, 0.8) 100%);
+      transition: background 0.2s;
     }
 
-    table.data-table td {
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      vertical-align: middle;
+    .blogger-header:hover {
+      background: rgba(56, 189, 248, 0.05);
     }
 
-    table.data-table tr:hover {
-      background-color: rgba(56, 189, 248, 0.04);
+    .blogger-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      min-width: 0;
     }
 
-    /* 欄位微調 */
-    .col-cover {
-      width: 60px;
-      text-align: center;
-    }
-
-    .cover-thumb {
-      width: 48px;
-      height: 48px;
-      border-radius: 8px;
+    .blogger-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
       object-fit: cover;
       background: #0f172a;
       border: 1px solid rgba(255,255,255,0.1);
-      cursor: pointer;
-      transition: transform 0.2s;
+      flex-shrink: 0;
     }
 
-    .cover-thumb:hover {
-      transform: scale(1.1);
+    .blogger-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
     }
 
-    .blogger-pill {
-      display: inline-block;
-      background: rgba(99, 102, 241, 0.15);
-      color: #a5b4fc;
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-weight: 600;
+    .blogger-name-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .blogger-title-text {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .count-pill {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-blue);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .count-pill.multi {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(239, 68, 68, 0.2));
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .blogger-sub-desc {
       font-size: 13px;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
+    .blogger-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    /* 快速網址框 (外露於卡片) */
+    .quick-pikpak-bar {
+      display: flex;
+      align-items: center;
+      background: #0f172a;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 6px 12px;
+      border-radius: 8px;
+      gap: 8px;
+      max-width: 280px;
+    }
+
+    .quick-url-text {
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--accent-blue);
+      text-decoration: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 140px;
+    }
+
+    .btn-expand-toggle {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-expand-toggle:hover {
+      background: var(--bg-hover);
+      border-color: var(--accent-blue);
+    }
+
+    .arrow-icon {
+      transition: transform 0.25s ease;
+      font-size: 12px;
+    }
+
+    .blogger-card.expanded .arrow-icon {
+      transform: rotate(180deg);
+    }
+
+    /* 展開後的子項目清單 */
+    .blogger-sub-items {
+      display: none;
+      border-top: 1px solid var(--border-color);
+      background: #111a2c;
+    }
+
+    .blogger-card.expanded .blogger-sub-items {
+      display: block;
+    }
+
+    .sub-item-row {
+      padding: 12px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background 0.15s;
+    }
+
+    .sub-item-row:last-child {
+      border-bottom: none;
+    }
+
+    .sub-item-row:hover {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .sub-item-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sub-item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+
+    .sub-item-title:hover {
+      color: var(--accent-blue);
+    }
+
+    .sub-item-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .sub-item-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* ===== 通用徽章與按鈕 ===== */
     .badge-platform {
       display: inline-block;
       padding: 2px 7px;
@@ -288,7 +462,6 @@
       background: rgba(56, 189, 248, 0.15);
       color: #7dd3fc;
       border: 1px solid rgba(56, 189, 248, 0.3);
-      margin-right: 4px;
     }
 
     .badge-type {
@@ -302,118 +475,47 @@
       border: 1px solid rgba(192, 132, 252, 0.3);
     }
 
-    .badge-channel {
-      display: inline-block;
-      padding: 2px 6px;
-      border-radius: 4px;
+    .badge-source {
       font-size: 11px;
       color: var(--text-muted);
       background: rgba(255,255,255,0.05);
-    }
-
-    .title-cell {
-      max-width: 380px;
-    }
-
-    .resource-title {
-      font-weight: 600;
-      color: #f1f5f9;
-      margin-bottom: 4px;
-      line-height: 1.4;
-      cursor: pointer;
-    }
-
-    .resource-title:hover {
-      color: var(--accent-blue);
-    }
-
-    .tags-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 4px;
-    }
-
-    .tag-item {
-      font-size: 11px;
-      color: var(--text-muted);
-      background: rgba(255,255,255,0.04);
-      padding: 1px 6px;
+      padding: 2px 6px;
       border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.15s;
     }
 
-    .tag-item:hover {
-      color: var(--accent-blue);
-      background: rgba(56, 189, 248, 0.1);
-    }
-
-    /* PikPak 直連框 */
-    .pikpak-box {
-      background: #0f172a;
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      padding: 8px 12px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      max-width: 320px;
-    }
-
-    .pikpak-url-text {
-      font-family: monospace;
-      font-size: 12px;
-      color: var(--accent-blue);
-      text-decoration: none;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      flex: 1;
-    }
-
-    .pikpak-url-text:hover {
-      text-decoration: underline;
-    }
-
-    .btn-copy-url {
+    .btn-copy {
       background: var(--accent-blue);
       color: #0f172a;
       border: none;
       font-size: 12px;
       font-weight: 700;
-      padding: 4px 9px;
-      border-radius: 5px;
+      padding: 5px 10px;
+      border-radius: 6px;
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.2s;
     }
 
-    .btn-copy-url:hover {
+    .btn-copy:hover {
       background: #7dd3fc;
       transform: translateY(-1px);
     }
 
-    .btn-copy-url.copied {
+    .btn-copy.copied {
       background: var(--accent-green);
-      color: #0f172a;
     }
 
-    .code-box {
+    .code-tag {
       font-family: monospace;
       font-size: 12px;
       background: rgba(255,255,255,0.05);
+      color: var(--accent-amber);
       padding: 3px 6px;
       border-radius: 4px;
-      color: var(--accent-amber);
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
       cursor: pointer;
     }
 
-    .btn-detail {
+    .btn-view-detail {
       background: transparent;
       border: 1px solid var(--border-color);
       color: var(--text-muted);
@@ -421,13 +523,51 @@
       border-radius: 6px;
       font-size: 12px;
       cursor: pointer;
-      transition: all 0.2s;
     }
 
-    .btn-detail:hover {
+    .btn-view-detail:hover {
       background: var(--bg-hover);
       color: var(--text-main);
-      border-color: var(--accent-blue);
+    }
+
+    /* ===== 模式 B：平鋪表格樣式 (Flat Table) ===== */
+    .table-wrapper {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    table.data-table th {
+      background: #182234;
+      padding: 12px 16px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+
+    table.data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: middle;
+    }
+
+    table.data-table tr:hover {
+      background: rgba(56, 189, 248, 0.03);
+    }
+
+    .cover-thumb-sm {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #0f172a;
     }
 
     /* 空狀態 */
@@ -437,12 +577,6 @@
       color: var(--text-muted);
     }
 
-    .empty-state-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-      opacity: 0.6;
-    }
-
     /* 詳情彈窗 Modal */
     .modal-overlay {
       position: fixed;
@@ -450,7 +584,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(8px);
       z-index: 1000;
       display: none;
@@ -472,7 +606,6 @@
       max-height: 90vh;
       overflow-y: auto;
       box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      position: relative;
     }
 
     .modal-header {
@@ -487,57 +620,12 @@
       z-index: 10;
     }
 
-    .modal-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .btn-close-modal {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 22px;
-      cursor: pointer;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-    }
-
-    .btn-close-modal:hover {
-      background: var(--bg-hover);
-      color: var(--text-main);
-    }
-
-    .modal-body {
-      padding: 20px;
-    }
-
     .modal-pikpak-banner {
       background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
       border: 1px solid var(--accent-blue);
       border-radius: 12px;
       padding: 16px;
-      margin-bottom: 20px;
-    }
-
-    .modal-pikpak-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--accent-blue);
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .modal-url-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
+      margin-bottom: 16px;
     }
 
     .modal-url-input {
@@ -549,19 +637,18 @@
       font-family: monospace;
       font-size: 13px;
       color: #38bdf8;
-      outline: none;
     }
 
     .modal-img-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 10px;
-      margin: 16px 0;
+      margin: 14px 0;
     }
 
     .modal-img-grid img {
       width: 100%;
-      height: 140px;
+      height: 130px;
       object-fit: cover;
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.1);
@@ -576,74 +663,8 @@
       line-height: 1.6;
       color: #cbd5e1;
       white-space: pre-wrap;
-      max-height: 250px;
+      max-height: 220px;
       overflow-y: auto;
-      margin-top: 10px;
-    }
-
-    /* 手機版適配樣式 */
-    @media (max-width: 900px) {
-      table.data-table, 
-      table.data-table thead, 
-      table.data-table tbody, 
-      table.data-table th, 
-      table.data-table td, 
-      table.data-table tr {
-        display: block;
-      }
-
-      table.data-table thead {
-        display: none;
-      }
-
-      table.data-table tr {
-        background: var(--bg-panel);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        margin-bottom: 12px;
-        padding: 14px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      }
-
-      table.data-table td {
-        padding: 6px 0;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      table.data-table td.col-cover {
-        display: none;
-      }
-
-      table.data-table td.col-main {
-        display: block;
-        margin-bottom: 10px;
-      }
-
-      .mobile-header-row {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 8px;
-      }
-
-      .mobile-cover {
-        width: 60px;
-        height: 60px;
-        border-radius: 8px;
-        object-fit: cover;
-      }
-
-      .mobile-header-info {
-        flex: 1;
-      }
-
-      .pikpak-box {
-        max-width: 100%;
-        width: 100%;
-        margin-top: 8px;
-      }
     }
 
     /* 提示 Toast */
@@ -657,15 +678,32 @@
       font-weight: 700;
       padding: 10px 20px;
       border-radius: 30px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
       font-size: 14px;
-      transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      transition: transform 0.3s ease;
       z-index: 2000;
       pointer-events: none;
     }
 
     .toast.show {
       transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .blogger-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .blogger-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .quick-pikpak-bar {
+        max-width: 100%;
+        flex: 1;
+      }
+      .quick-url-text {
+        width: auto;
+      }
     }
   </style>
 </head>
@@ -678,13 +716,13 @@
         <div class="brand-icon">📁</div>
         <div>
           <div class="brand-title">VIP 資源總庫管理控制台</div>
-          <div class="brand-subtitle">PikPak 雲端合集內部查詢清單 (清單模式)</div>
+          <div class="brand-subtitle">PikPak 雲端合集・依博主歸類清單</div>
         </div>
       </div>
       <div class="stats-bar">
-        <div class="stat-badge">全庫總計: <strong id="totalCount">0</strong> 部</div>
-        <div class="stat-badge">已篩選: <strong id="filterCount">0</strong> 部</div>
-        <div class="stat-badge">涵蓋博主: <strong id="bloggerCount">0</strong> 位</div>
+        <div class="stat-badge">全庫資源: <strong id="totalCount">0</strong> 部</div>
+        <div class="stat-badge">獨立博主: <strong id="bloggerCount">0</strong> 位</div>
+        <div class="stat-badge">當前顯示: <strong id="showingCount">0</strong> 位博主</div>
       </div>
     </div>
   </header>
@@ -733,41 +771,60 @@
       </div>
 
       <div class="filter-actions">
-        <div class="search-summary">
-          當前顯示 <span id="currentShowing">0</span> 筆結果，直接在右側查看或複製專屬 PikPak 網址。
+        <!-- 檢視模式切換 (依博主歸類 vs 全部平鋪) -->
+        <div class="view-mode-toggle">
+          <button id="tabGrouped" class="view-tab active">
+            📁 依博主歸類聚合 (<span id="groupedBloggerCount">0</span> 位)
+          </button>
+          <button id="tabFlat" class="view-tab">
+            📄 全部平鋪清單 (<span id="flatItemCount">0</span> 筆)
+          </button>
         </div>
-        <button id="btnResetFilters" class="btn-reset">
-          <span>🔄</span> 重設所有篩選
-        </button>
+
+        <div style="display: flex; gap: 8px;">
+          <button id="btnToggleAll" class="btn-action">
+            <span>🔽</span> 全部展開/收合
+          </button>
+          <button id="btnResetFilters" class="btn-action">
+            <span>🔄</span> 重設篩選
+          </button>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- 清單列表主體 -->
+  <!-- 清單主區域 -->
   <main class="list-container">
-    <div class="table-wrapper">
+    <!-- 檢視模式 1：依博主歸類聚合清單 (預設) -->
+    <div id="groupedView" class="blogger-group-list">
+      <!-- 動態渲染博主卡片 -->
+    </div>
+
+    <!-- 檢視模式 2：全部平鋪清單 -->
+    <div id="flatView" class="table-wrapper" style="display: none;">
       <table class="data-table">
         <thead>
           <tr>
-            <th class="col-cover">封面</th>
-            <th>博主 / 創作者</th>
-            <th>平台與類型</th>
-            <th>合集標題與標籤</th>
-            <th>☁️ PikPak 直連網址 (核心)</th>
-            <th>專屬口令</th>
-            <th>來源頻道</th>
+            <th>封面</th>
+            <th>博主</th>
+            <th>平台/類型</th>
+            <th>合集標題</th>
+            <th>☁️ PikPak 直連網址</th>
+            <th>口令</th>
             <th>操作</th>
           </tr>
         </thead>
-        <tbody id="resourceTableBody">
-          <!-- 動態渲染清單內容 -->
+        <tbody id="flatTableBody">
+          <!-- 平鋪清單 -->
         </tbody>
       </table>
-      <div id="emptyState" class="empty-state" style="display: none;">
-        <div class="empty-state-icon">🔎</div>
-        <h3>查無符合條件的資源</h3>
-        <p>請嘗試放寬篩選選單或輸入其他關鍵字。</p>
-      </div>
+    </div>
+
+    <!-- 查無資料提示 -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div style="font-size: 40px; margin-bottom: 8px;">🔎</div>
+      <h3>查無符合條件的資源</h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">請嘗試放寬篩選選單或更換關鍵字。</p>
     </div>
   </main>
 
@@ -775,35 +832,32 @@
   <div id="detailModal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-header">
-        <div class="modal-title" id="modalTitle">資源詳情</div>
-        <button class="btn-close-modal" id="btnCloseModal">&times;</button>
+        <div style="font-weight: 700;" id="modalTitle">資源詳情</div>
+        <button id="btnCloseModal" style="background:transparent; border:none; color:var(--text-muted); font-size:22px; cursor:pointer;">&times;</button>
       </div>
-      <div class="modal-body">
-        
-        <!-- PikPak 高亮直連卡 -->
+      <div style="padding: 18px;">
         <div class="modal-pikpak-banner">
-          <div class="modal-pikpak-title">
-            <span>☁️ PikPak 官方雲端直連網址 (點擊前往或複製)：</span>
+          <div style="font-size: 13px; font-weight:700; color:var(--accent-blue); margin-bottom:8px;">
+            ☁️ PikPak 官方雲端直連網址：
           </div>
-          <div class="modal-url-row">
+          <div style="display:flex; gap:8px;">
             <input type="text" id="modalUrlInput" class="modal-url-input" readonly>
-            <button class="btn-copy-url" id="btnModalCopyUrl">一鍵複製</button>
-            <a href="#" target="_blank" id="btnModalOpenUrl" class="btn-copy-url" style="text-decoration:none; display:inline-flex; align-items:center;">開啟直連</a>
+            <button class="btn-copy" id="btnModalCopyUrl">一鍵複製</button>
+            <a href="#" target="_blank" id="btnModalOpenUrl" class="btn-copy" style="text-decoration:none; display:inline-flex; align-items:center;">開啟直連</a>
           </div>
         </div>
 
-        <div style="margin-bottom: 12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          <span class="blogger-pill" id="modalBlogger">博主</span>
+        <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
           <span class="badge-platform" id="modalPlatform">平台</span>
           <span class="badge-type" id="modalType">類型</span>
-          <span class="badge-channel" id="modalChannel">來源</span>
-          <span class="code-box" id="modalCodeBox">口令: -</span>
+          <span class="badge-source" id="modalChannel">來源</span>
+          <span class="code-tag" id="modalCodeBox">口令: -</span>
         </div>
 
-        <h4 style="margin: 14px 0 6px; font-size:14px; color:var(--text-muted);">寫真 / 封面預覽套圖：</h4>
+        <h4 style="font-size: 13px; color:var(--text-muted); margin: 12px 0 6px;">寫真/封面套圖預覽：</h4>
         <div class="modal-img-grid" id="modalImagesGrid"></div>
 
-        <h4 style="margin: 14px 0 6px; font-size:14px; color:var(--text-muted);">來源頻道原始貼文：</h4>
+        <h4 style="font-size: 13px; color:var(--text-muted); margin: 12px 0 6px;">來源頻道完整貼文：</h4>
         <div class="raw-text-box" id="modalRawText"></div>
       </div>
     </div>
@@ -813,15 +867,14 @@
   <div id="toast" class="toast">✅ 已成功複製到剪貼簿！</div>
 
   <script>
-    // 初始化 Telegram WebApp
     if (window.Telegram && window.Telegram.WebApp) {
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-      tg.expand();
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
     }
 
     let allItems = [];
-    let filteredItems = [];
+    let currentViewMode = 'grouped'; // 'grouped' 或 'flat'
+    let allExpanded = false;
 
     // DOM 元素快取
     const filterPlatform = document.getElementById('filterPlatform');
@@ -829,22 +882,28 @@
     const filterBlogger = document.getElementById('filterBlogger');
     const filterKeyword = document.getElementById('filterKeyword');
     const btnResetFilters = document.getElementById('btnResetFilters');
-    const tableBody = document.getElementById('resourceTableBody');
+    const btnToggleAll = document.getElementById('btnToggleAll');
+    const tabGrouped = document.getElementById('tabGrouped');
+    const tabFlat = document.getElementById('tabFlat');
+
+    const groupedView = document.getElementById('groupedView');
+    const flatView = document.getElementById('flatView');
+    const flatTableBody = document.getElementById('flatTableBody');
     const emptyState = document.getElementById('emptyState');
 
     const totalCountEl = document.getElementById('totalCount');
-    const filterCountEl = document.getElementById('filterCount');
     const bloggerCountEl = document.getElementById('bloggerCount');
-    const currentShowingEl = document.getElementById('currentShowing');
+    const showingCountEl = document.getElementById('showingCount');
+    const groupedBloggerCountEl = document.getElementById('groupedBloggerCount');
+    const flatItemCountEl = document.getElementById('flatItemCount');
 
-    // 詳情彈窗元素
+    // 彈窗元素
     const detailModal = document.getElementById('detailModal');
     const btnCloseModal = document.getElementById('btnCloseModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalUrlInput = document.getElementById('modalUrlInput');
     const btnModalCopyUrl = document.getElementById('btnModalCopyUrl');
     const btnModalOpenUrl = document.getElementById('btnModalOpenUrl');
-    const modalBlogger = document.getElementById('modalBlogger');
     const modalPlatform = document.getElementById('modalPlatform');
     const modalType = document.getElementById('modalType');
     const modalChannel = document.getElementById('modalChannel');
@@ -853,14 +912,12 @@
     const modalRawText = document.getElementById('modalRawText');
     const toast = document.getElementById('toast');
 
-    // 顯示提示
     function showToast(msg) {
       toast.innerText = msg || '✅ 已複製！';
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
-    // 複製文字至剪貼簿
     function copyText(text, btnElement) {
       if (!text) return;
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -893,19 +950,16 @@
         const res = await fetch('catalog.json?t=' + Date.now(), { cache: 'no-store' });
         allItems = await res.json();
         
-        // 確保每個 item 有規範欄位
         allItems.forEach(item => {
           if (!item.platform) item.platform = item.category || '其他平台';
           if (!item.content_type) item.content_type = '完整合集';
           if (!item.blogger) item.blogger = '精選創作者';
         });
 
-        // 統計博主總數
         const uniqueBloggers = new Set(allItems.map(x => x.blogger));
         totalCountEl.innerText = allItems.length;
         bloggerCountEl.innerText = uniqueBloggers.size;
 
-        // 初始化下拉選單
         initDropdowns();
         applyFilters();
       } catch (err) {
@@ -913,9 +967,8 @@
       }
     }
 
-    // 初始化下拉選項 (平台、類型、博主)
+    // 初始化下拉選項
     function initDropdowns() {
-      // 1. 平台選項
       const platforms = [...new Set(allItems.map(x => x.platform))].sort();
       filterPlatform.innerHTML = '<option value="ALL">全部平台 (All Platforms)</option>';
       platforms.forEach(p => {
@@ -923,12 +976,10 @@
         filterPlatform.innerHTML += `<option value="${p}">${p} (${count})</option>`;
       });
 
-      // 更新下一級
       updateTypeDropdown();
       updateBloggerDropdown();
     }
 
-    // 動態更新類型選單
     function updateTypeDropdown() {
       const selectedPlatform = filterPlatform.value;
       const currentSelectedType = filterType.value;
@@ -954,7 +1005,6 @@
       updateBloggerDropdown();
     }
 
-    // 動態更新博主選單
     function updateBloggerDropdown() {
       const selectedPlatform = filterPlatform.value;
       const selectedType = filterType.value;
@@ -982,14 +1032,15 @@
       }
     }
 
-    // 套用篩選並渲染清單
+    // 核心篩選與分組邏輯
     function applyFilters() {
       const p = filterPlatform.value;
       const t = filterType.value;
       const b = filterBlogger.value;
       const kw = filterKeyword.value.trim().toLowerCase();
 
-      filteredItems = allItems.filter(item => {
+      // 1. 篩選符合條件的所有單篇資源
+      const filtered = allItems.filter(item => {
         if (p !== 'ALL' && item.platform !== p) return false;
         if (t !== 'ALL' && item.content_type !== t) return false;
         if (b !== 'ALL' && item.blogger !== b) return false;
@@ -1000,119 +1051,174 @@
         return true;
       });
 
-      filterCountEl.innerText = filteredItems.length;
-      currentShowingEl.innerText = filteredItems.length;
+      // 2. 依照博主歸類聚合 (Group by Blogger)
+      const bloggerMap = new Map();
+      filtered.forEach(item => {
+        const bloggerName = item.blogger;
+        if (!bloggerMap.has(bloggerName)) {
+          bloggerMap.set(bloggerName, []);
+        }
+        bloggerMap.get(bloggerName).push(item);
+      });
 
-      renderTable(filteredItems);
-    }
+      // 依照資源數量由多到少排序博主
+      const sortedBloggerGroups = [...bloggerMap.entries()].sort((a, b) => b[1].length - a[1].length);
 
-    // 渲染資料表格
-    function renderTable(items) {
-      if (items.length === 0) {
-        tableBody.innerHTML = '';
+      // 更新看板數據
+      showingCountEl.innerText = sortedBloggerGroups.length;
+      groupedBloggerCountEl.innerText = sortedBloggerGroups.length;
+      flatItemCountEl.innerText = filtered.length;
+
+      if (sortedBloggerGroups.length === 0) {
+        groupedView.innerHTML = '';
+        flatTableBody.innerHTML = '';
         emptyState.style.display = 'block';
         return;
       }
 
       emptyState.style.display = 'none';
 
+      // 3. 渲染兩種模式
+      renderGroupedView(sortedBloggerGroups);
+      renderFlatView(filtered);
+    }
+
+    // 渲染模式 A：依博主歸類聚合卡片清單
+    function renderGroupedView(groups) {
+      let html = '';
+
+      groups.forEach(([blogger, items]) => {
+        const count = items.length;
+        const mainItem = items[0]; // 最新的主項目
+        const coverSrc = mainItem.cover_url || (mainItem.images && mainItem.images[0]) || '';
+        const platforms = [...new Set(items.map(x => x.platform))];
+        const isMulti = count > 1;
+
+        const mainShareUrl = mainItem.pikpak_url || '';
+        const mainShortUrl = mainShareUrl.replace('https://mypikpak.com/s/', '.../s/');
+        const mainCode = mainItem.pikpak_code || blogger;
+
+        html += `
+          <div class="blogger-card ${allExpanded ? 'expanded' : ''}" id="group-${escapeId(blogger)}">
+            <!-- 博主主列 (點擊切換展開/收合) -->
+            <div class="blogger-header" onclick="toggleBloggerCard('${escapeId(blogger)}')">
+              <div class="blogger-left">
+                ${coverSrc ? `<img src="${coverSrc}" class="blogger-avatar" alt="${escapeHtml(blogger)}">` : '<div class="blogger-avatar"></div>'}
+                <div class="blogger-info">
+                  <div class="blogger-name-row">
+                    <span class="blogger-title-text">👤 ${escapeHtml(blogger)}</span>
+                    <span class="count-pill ${isMulti ? 'multi' : ''}">
+                      ${isMulti ? `🔥 收錄 ${count} 部合集` : `共 1 部合集`}
+                    </span>
+                    ${platforms.map(p => `<span class="badge-platform">${escapeHtml(p)}</span>`).join('')}
+                  </div>
+                  <div class="blogger-sub-desc">
+                    最新收錄：${escapeHtml(mainItem.title)}
+                  </div>
+                </div>
+              </div>
+
+              <!-- 右側操作與快速連結 -->
+              <div class="blogger-right" onclick="event.stopPropagation()">
+                <div class="quick-pikpak-bar" title="最新合集網址: ${mainShareUrl}">
+                  <a href="${mainShareUrl}" target="_blank" class="quick-url-text">
+                    ☁️ ${escapeHtml(mainShortUrl || mainShareUrl)}
+                  </a>
+                  <button class="btn-copy" onclick="copyText('${mainShareUrl}', this)">複製網址</button>
+                </div>
+                ${isMulti ? `
+                  <button class="btn-expand-toggle" onclick="toggleBloggerCard('${escapeId(blogger)}')">
+                    <span>展開清單 (${count})</span>
+                    <span class="arrow-icon">▼</span>
+                  </button>
+                ` : `
+                  <button class="btn-view-detail" onclick="openDetail(${mainItem.id})">詳情</button>
+                `}
+              </div>
+            </div>
+
+            <!-- 歸類於此博主的子項目合集清單 (展開後呈現) -->
+            <div class="blogger-sub-items">
+              ${items.map((sub, idx) => {
+                const subUrl = sub.pikpak_url || '';
+                const subShort = subUrl.replace('https://mypikpak.com/s/', '.../s/');
+                const subCode = sub.pikpak_code || sub.blogger;
+                return `
+                  <div class="sub-item-row">
+                    <div class="sub-item-left">
+                      <div class="sub-item-title" onclick="openDetail(${sub.id})">
+                        【第 ${items.length - idx} 部】${escapeHtml(sub.title)}
+                      </div>
+                      <div class="sub-item-meta">
+                        <span class="badge-type">${escapeHtml(sub.content_type)}</span>
+                        <span class="badge-source">來源: ${escapeHtml(sub.source_channel_name || '精品收藏')}</span>
+                        ${sub.video_count ? `<span>🎬 ${sub.video_count} 影片</span>` : ''}
+                        ${sub.photo_count ? `<span>📸 ${sub.photo_count} 寫真</span>` : ''}
+                        <span>🔑 口令: <code class="code-tag" onclick="copyText('${subCode}', null)">${escapeHtml(subCode)}</code></span>
+                      </div>
+                    </div>
+                    <div class="sub-item-right">
+                      <div class="quick-pikpak-bar">
+                        <a href="${subUrl}" target="_blank" class="quick-url-text" title="${subUrl}">
+                          ☁️ ${escapeHtml(subShort)}
+                        </a>
+                        <button class="btn-copy" onclick="copyText('${subUrl}', this)">複製</button>
+                      </div>
+                      <button class="btn-view-detail" onclick="openDetail(${sub.id})">詳情</button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      groupedView.innerHTML = html;
+    }
+
+    // 渲染模式 B：平鋪清單
+    function renderFlatView(items) {
       let html = '';
       items.forEach(item => {
         const coverSrc = item.cover_url || (item.images && item.images[0]) || '';
-        const tagsHtml = (item.tags || []).map(tag => 
-          `<span class="tag-item" onclick="onTagClick('${tag}')">${tag}</span>`
-        ).join('');
-
         const shareUrl = item.pikpak_url || '';
         const shortUrl = shareUrl.replace('https://mypikpak.com/s/', '.../s/');
         const code = item.pikpak_code || item.blogger || '-';
-        const chName = item.source_channel_name || '精品收藏';
 
         html += `
-          <tr id="row-${item.id}">
-            <!-- 封面 -->
-            <td class="col-cover">
-              ${coverSrc ? `<img src="${coverSrc}" class="cover-thumb" onclick="openDetail(${item.id})" alt="cover">` : '<div style="width:48px;height:48px;background:#1e293b;border-radius:8px;"></div>'}
-            </td>
-
-            <!-- 博主 -->
+          <tr>
             <td>
-              <span class="blogger-pill" onclick="filterByBlogger('${item.blogger}')" style="cursor:pointer;" title="篩選此博主">
-                👤 ${escapeHtml(item.blogger)}
-              </span>
+              ${coverSrc ? `<img src="${coverSrc}" class="cover-thumb-sm" onclick="openDetail(${item.id})">` : ''}
             </td>
-
-            <!-- 平台與類型 -->
+            <td><strong>${escapeHtml(item.blogger)}</strong></td>
             <td>
               <span class="badge-platform">${escapeHtml(item.platform)}</span>
               <span class="badge-type">${escapeHtml(item.content_type)}</span>
             </td>
-
-            <!-- 標題與標籤 -->
-            <td class="title-cell col-main">
-              <!-- 手機版微排版 -->
-              <div class="mobile-header-row" style="display:none;">
-                ${coverSrc ? `<img src="${coverSrc}" class="mobile-cover" onclick="openDetail(${item.id})">` : ''}
-                <div class="mobile-header-info">
-                  <span class="blogger-pill">👤 ${escapeHtml(item.blogger)}</span>
-                  <div style="margin-top:4px;">
-                    <span class="badge-platform">${escapeHtml(item.platform)}</span>
-                    <span class="badge-type">${escapeHtml(item.content_type)}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="resource-title" onclick="openDetail(${item.id})">${escapeHtml(item.title)}</div>
-              <div class="tags-container">${tagsHtml}</div>
+            <td style="max-width:320px;">
+              <div style="font-weight:600; cursor:pointer;" onclick="openDetail(${item.id})">${escapeHtml(item.title)}</div>
             </td>
-
-            <!-- PikPak 直連網址 -->
             <td>
-              <div class="pikpak-box">
-                <a href="${shareUrl}" target="_blank" class="pikpak-url-text" title="${shareUrl}">
-                  ☁️ ${escapeHtml(shortUrl || shareUrl)}
-                </a>
-                <button class="btn-copy-url" onclick="copyText('${shareUrl}', this)">複製網址</button>
+              <div class="quick-pikpak-bar">
+                <a href="${shareUrl}" target="_blank" class="quick-url-text">${escapeHtml(shortUrl)}</a>
+                <button class="btn-copy" onclick="copyText('${shareUrl}', this)">複製</button>
               </div>
             </td>
-
-            <!-- 口令 -->
-            <td>
-              <span class="code-box" onclick="copyText('${code}', null)" title="點擊複製口令">
-                🔑 ${escapeHtml(code)}
-              </span>
-            </td>
-
-            <!-- 來源頻道 -->
-            <td>
-              <span class="badge-channel">${escapeHtml(chName)}</span>
-            </td>
-
-            <!-- 操作 -->
-            <td>
-              <button class="btn-detail" onclick="openDetail(${item.id})">查看詳情</button>
-            </td>
+            <td><code class="code-tag" onclick="copyText('${code}', null)">${escapeHtml(code)}</code></td>
+            <td><button class="btn-view-detail" onclick="openDetail(${item.id})">詳情</button></td>
           </tr>
         `;
       });
-
-      tableBody.innerHTML = html;
+      flatTableBody.innerHTML = html;
     }
 
-    // 標籤點擊快篩
-    window.onTagClick = function(tag) {
-      filterKeyword.value = tag.replace('#', '');
-      applyFilters();
-    };
-
-    // 點擊博主標籤快篩
-    window.filterByBlogger = function(b) {
-      filterPlatform.value = 'ALL';
-      updateTypeDropdown();
-      filterType.value = 'ALL';
-      updateBloggerDropdown();
-      filterBlogger.value = b;
-      filterKeyword.value = '';
-      applyFilters();
+    // 切換展開/收合卡片
+    window.toggleBloggerCard = function(escapedBlogger) {
+      const card = document.getElementById(`group-${escapedBlogger}`);
+      if (card) {
+        card.classList.toggle('expanded');
+      }
     };
 
     // 開啟詳情彈窗
@@ -1126,13 +1232,11 @@
 
       btnModalCopyUrl.onclick = () => copyText(item.pikpak_url, btnModalCopyUrl);
 
-      modalBlogger.innerText = `👤 博主：${item.blogger}`;
       modalPlatform.innerText = item.platform;
       modalType.innerText = item.content_type;
       modalChannel.innerText = `來源：${item.source_channel_name || '精品收藏'}`;
       modalCodeBox.innerText = `🔑 口令：${item.pikpak_code || item.blogger}`;
 
-      // 渲染大圖預覽
       modalImagesGrid.innerHTML = '';
       const imgs = item.images && item.images.length > 0 ? item.images : (item.cover_url ? [item.cover_url] : []);
       imgs.forEach(src => {
@@ -1140,17 +1244,42 @@
       });
 
       modalRawText.innerText = item.raw_text || item.description || '無詳細文字備註';
-
       detailModal.classList.add('active');
     };
 
-    // 關閉詳情彈窗
     btnCloseModal.onclick = () => detailModal.classList.remove('active');
     detailModal.onclick = (e) => {
       if (e.target === detailModal) detailModal.classList.remove('active');
     };
 
-    // 事件監聽
+    // 檢視模式切換
+    tabGrouped.onclick = () => {
+      tabGrouped.classList.add('active');
+      tabFlat.classList.remove('active');
+      groupedView.style.display = 'flex';
+      flatView.style.display = 'none';
+      currentViewMode = 'grouped';
+    };
+
+    tabFlat.onclick = () => {
+      tabFlat.classList.add('active');
+      tabGrouped.classList.remove('active');
+      groupedView.style.display = 'none';
+      flatView.style.display = 'block';
+      currentViewMode = 'flat';
+    };
+
+    // 一鍵展開/收合所有博主
+    btnToggleAll.onclick = () => {
+      allExpanded = !allExpanded;
+      btnToggleAll.innerHTML = allExpanded ? '<span>🔼</span> 全部收合' : '<span>🔽</span> 全部展開';
+      document.querySelectorAll('.blogger-card').forEach(card => {
+        if (allExpanded) card.classList.add('expanded');
+        else card.classList.remove('expanded');
+      });
+    };
+
+    // 下拉事件
     filterPlatform.addEventListener('change', () => {
       updateTypeDropdown();
       applyFilters();
@@ -1189,7 +1318,10 @@
         .replace(/'/g, '&#039;');
     }
 
-    // 啟動載入
+    function escapeId(str) {
+      return encodeURIComponent(str || '').replace(/%/g, '_');
+    }
+
     loadCatalog();
   </script>
 </body>
