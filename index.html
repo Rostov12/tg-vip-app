@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>身心保健 ｜ PikPak 雲端專屬資源庫</title>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -181,6 +184,39 @@
           </div>
         </div>
 
+        <!-- ☁️ 專屬 PikPak 官方網盤直連專區 (醒目發光卡片) -->
+        <div class="bg-gradient-to-r from-blue-950/80 via-slate-900 to-indigo-950/80 rounded-xl p-3 border-2 border-blue-500/50 shadow-lg shadow-blue-500/10 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-300 flex items-center gap-1.5">
+              <span class="text-base">☁️</span> <b>PikPak 雲端直連網址：</b>
+            </span>
+            <span class="text-[10px] bg-blue-500/20 text-blue-300 font-bold px-2 py-0.5 rounded-full border border-blue-400/30">
+              ⚡ 原檔無碼・秒存秒播
+            </span>
+          </div>
+
+          <!-- 網址顯示框（直接顯示完整 https://mypikpak.com/s/...） -->
+          <div class="bg-black/80 rounded-lg p-2.5 border border-blue-500/30 flex items-center justify-between gap-2">
+            <a id="modalPikPakLink" href="#" target="_blank" class="text-xs text-blue-400 font-mono underline truncate flex-1 hover:text-blue-200">
+              載入中...
+            </a>
+            <button id="btnCopyUrlDirect" class="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold flex-shrink-0 transition-transform active:scale-95 shadow">
+              📋 複製
+            </button>
+          </div>
+
+          <!-- 提取碼 / 口令 -->
+          <div class="flex items-center justify-between text-xs text-zinc-300 pt-1.5 border-t border-white/10">
+            <div class="flex items-center gap-1.5">
+              <span>🔑</span>
+              <span>博主專屬提取口令：<b id="modalCode" class="text-amber-400 font-mono text-sm tracking-wide"></b></span>
+            </div>
+            <button id="btnCopyCode" class="px-2.5 py-0.5 rounded bg-white/10 hover:bg-white/20 text-zinc-200 text-[10px] font-medium border border-white/20">
+              複製口令
+            </button>
+          </div>
+        </div>
+
         <!-- 貼文完整內文展示區 -->
         <div class="bg-black/40 rounded-xl p-3 border border-white/5">
           <div class="text-[11px] text-zinc-400 font-medium mb-1 flex items-center justify-between">
@@ -194,15 +230,6 @@
         <div>
           <div class="text-[11px] text-zinc-400 mb-1.5 font-medium">🏷️ 標籤分類（點擊直接篩選）：</div>
           <div class="flex flex-wrap gap-1.5" id="modalTags"></div>
-        </div>
-
-        <!-- 提取碼提示卡 -->
-        <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-2.5 text-[11px] text-blue-300 flex items-center justify-between">
-          <div class="flex items-center gap-1.5">
-            <span>🔑</span>
-            <span>博主專屬提取碼/口令：<b id="modalCode" class="text-white font-mono"></b></span>
-          </div>
-          <button id="btnCopyCode" class="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-bold">複製</button>
         </div>
       </div>
 
@@ -530,6 +557,25 @@
       // 貼文內文
       document.getElementById('modalRawText').innerText = item.raw_text || item.description || '暫無額外看點描述';
       document.getElementById('modalCode').innerText = item.pikpak_code || item.blogger;
+
+      // 更新 PikPak 網址顯示框
+      const pikpakLink = document.getElementById('modalPikPakLink');
+      if (item.pikpak_url) {
+        pikpakLink.href = item.pikpak_url;
+        pikpakLink.innerText = item.pikpak_url;
+      } else {
+        pikpakLink.removeAttribute('href');
+        pikpakLink.innerText = '此合集未提供外鏈網址';
+      }
+
+      document.getElementById('btnCopyUrlDirect').onclick = () => {
+        haptic();
+        if (item.pikpak_url) {
+          navigator.clipboard.writeText(item.pikpak_url).then(() => {
+            showToast('已複製 PikPak 直連網址！');
+          });
+        }
+      };
 
       // 標籤渲染（點擊可直接觸發全庫篩選）
       const tagsContainer = document.getElementById('modalTags');
