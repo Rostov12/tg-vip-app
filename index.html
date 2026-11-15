@@ -1109,9 +1109,10 @@
         const mainShareUrl = mainItem.pikpak_url || '';
         const mainShortUrl = mainShareUrl.replace('https://mypikpak.com/s/', '.../s/');
         const mainCode = mainItem.pikpak_code || blogger;
+        const tgVids = mainItem.tg_videos || [];
 
         html += `
-          <div class="blogger-card ${allExpanded ? 'expanded' : ''}" id="group-${escapeId(blogger)}">
+          <div class="blogger-card ${allExpanded || tgVids.length > 0 ? 'expanded' : ''}" id="group-${escapeId(blogger)}">
             <!-- 博主主列 (點擊切換展開/收合) -->
             <div class="blogger-header" onclick="toggleBloggerCard('${escapeId(blogger)}')">
               <div class="blogger-left">
@@ -1122,6 +1123,7 @@
                     <span class="count-pill ${isMulti ? 'multi' : ''}">
                       ${isMulti ? `🔥 收錄 ${count} 部合集` : `共 1 部合集`}
                     </span>
+                    ${tgVids.length > 0 ? `<span class="badge-platform" style="background:rgba(16,185,129,0.2);color:#34d399;border-color:rgba(16,185,129,0.4);">🎬 群內直看 ${tgVids.length} 部</span>` : ''}
                     ${platforms.map(p => `<span class="badge-platform">${escapeHtml(p)}</span>`).join('')}
                   </div>
                   <div class="blogger-sub-desc">
@@ -1137,6 +1139,7 @@
                     ☁️ ${escapeHtml(mainShortUrl || mainShareUrl)}
                   </a>
                   <button class="btn-copy" onclick="copyText('${mainShareUrl}', this)">複製網址</button>
+                  ${tgVids.length > 0 ? `<a href="${tgVids[0].url}" target="_blank" class="btn-copy" style="background:linear-gradient(135deg,#059669,#10b981); color:#fff; text-decoration:none;">▶️ 群內直看</a>` : ''}
                   <a href="https://t.me/CCsexybot?start=get_${encodeURIComponent(blogger)}" target="_blank" class="btn-copy" style="background:linear-gradient(135deg,#6366f1,#a855f7); color:#fff; text-decoration:none;">🎁 TG秒領</a>
                 </div>
                 ${isMulti ? `
@@ -1152,6 +1155,22 @@
 
             <!-- 歸類於此博主的子項目合集清單 (展開後呈現) -->
             <div class="blogger-sub-items">
+              ${tgVids.map((v, vIdx) => `
+                <div class="sub-item-row" style="background:rgba(16,185,129,0.06);">
+                  <div class="sub-item-left">
+                    <div class="sub-item-title">
+                      🎬 【@shenxin_of 群內免下載直看 ${vIdx + 1}】${escapeHtml(v.title || blogger)}
+                    </div>
+                    <div class="sub-item-meta">
+                      <span class="badge-type" style="background:rgba(16,185,129,0.2);color:#34d399;border-color:rgba(16,185,129,0.4);">200MB+ 群內原片</span>
+                      <span class="badge-source">點擊右側按鈕直接跳轉 Telegram 頻道樓層播放</span>
+                    </div>
+                  </div>
+                  <div class="sub-item-right">
+                    <a href="${v.url}" target="_blank" class="btn-copy" style="background:#10b981;color:#0f172a;text-decoration:none;">▶️ 點此在群內直看</a>
+                  </div>
+                </div>
+              `).join('')}
               ${items.map((sub, idx) => {
                 const subUrl = sub.pikpak_url || '';
                 const subShort = subUrl.replace('https://mypikpak.com/s/', '.../s/');
