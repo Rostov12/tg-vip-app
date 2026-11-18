@@ -28,6 +28,10 @@
       --danger: #f87171;
     }
 
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -807,9 +811,34 @@
 
   <!-- 清單主區域 -->
   <main class="list-container">
+    <!-- 載入中骨架動畫 -->
+    <div id="loadingState" style="text-align:center; padding: 60px 20px;">
+      <div style="width: 44px; height: 44px; border: 4px solid rgba(56,189,248,0.2); border-top-color: #38bdf8; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px;"></div>
+      <div style="font-size: 16px; font-weight: 700; color: #38bdf8;">正在載入全庫 2,740 部無損雲盤資源...</div>
+      <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">已收錄 1,600+ 位博主與群內直看原片，請稍候約 1~2 秒</div>
+    </div>
+
+    <!-- 載入失敗提示 -->
+    <div id="errorState" style="display:none; text-align:center; padding: 40px 20px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 12px; margin: 20px;">
+      <div style="font-size: 36px; margin-bottom: 8px;">⚠️</div>
+      <h3 style="color: #f87171;">資源庫載入逾時或網路受限</h3>
+      <p style="font-size: 13px; color: #cbd5e1; margin: 8px 0 16px;">若您所在的網路環境無法直接讀取 GitHub 數據，可點擊下方直接進入純靜態目錄或透過 Telegram 機器人秒領：</p>
+      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+        <a href="directory.html" style="background:#38bdf8; color:#0f172a; padding:8px 16px; border-radius:8px; text-decoration:none; font-weight:700; font-size:13px;">📚 開啟千位博主靜態總目錄 (免等秒開)</a>
+        <a href="https://t.me/CCsexybot" target="_blank" style="background:#6366f1; color:#fff; padding:8px 16px; border-radius:8px; text-decoration:none; font-weight:700; font-size:13px;">🤖 回到 Telegram 機器人搜片</a>
+      </div>
+    </div>
+
     <!-- 檢視模式 1：依博主歸類聚合清單 (預設) -->
-    <div id="groupedView" class="blogger-group-list">
+    <div id="groupedView" class="blogger-group-list" style="display:none;">
       <!-- 動態渲染博主卡片 -->
+    </div>
+
+    <!-- 載入更多博主按鈕 -->
+    <div id="loadMoreContainer" style="display:none; text-align:center; margin: 24px 0;">
+      <button id="btnLoadMore" style="background:linear-gradient(135deg,#38bdf8,#6366f1); color:#fff; border:none; padding:12px 28px; border-radius:30px; font-weight:700; font-size:14px; cursor:pointer; box-shadow: 0 4px 15px rgba(56,189,248,0.3);">
+        ➕ 載入更多博主...
+      </button>
     </div>
 
     <!-- 檢視模式 2：全部平鋪清單 -->
@@ -909,6 +938,14 @@
     const groupedBloggerCountEl = document.getElementById('groupedBloggerCount');
     const flatItemCountEl = document.getElementById('flatItemCount');
 
+    const loadingState = document.getElementById('loadingState');
+    const errorState = document.getElementById('errorState');
+    const loadMoreContainer = document.getElementById('loadMoreContainer');
+    const btnLoadMore = document.getElementById('btnLoadMore');
+
+    let currentGroupLimit = 40;
+    let currentFilteredGroups = [];
+
     // 彈窗元素
     const detailModal = document.getElementById('detailModal');
     const btnCloseModal = document.getElementById('btnCloseModal');
@@ -959,7 +996,8 @@
     // 載入資料
     async function loadCatalog() {
       try {
-        const res = await fetch('catalog.json?t=' + Date.now(), { cache: 'no-store' });
+        const res = await fetch('catalog.json?v=4.2');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
         allItems = await res.json();
         
         allItems.forEach(item => {
@@ -972,10 +1010,15 @@
         totalCountEl.innerText = allItems.length;
         bloggerCountEl.innerText = uniqueBloggers.size;
 
+        if (loadingState) loadingState.style.display = 'none';
+        if (groupedView) groupedView.style.display = 'flex';
+
         initDropdowns();
         applyFilters();
       } catch (err) {
         console.error('載入失敗:', err);
+        if (loadingState) loadingState.style.display = 'none';
+        if (errorState) errorState.style.display = 'block';
       }
     }
 
@@ -1090,9 +1133,31 @@
 
       emptyState.style.display = 'none';
 
-      // 3. 渲染兩種模式
-      renderGroupedView(sortedBloggerGroups);
-      renderFlatView(filtered);
+      // 3. 渲染兩種模式 (首屏懶加載前 40 位博主，徹底杜絕手機端記憶體負載卡死)
+      currentFilteredGroups = sortedBloggerGroups;
+      currentGroupLimit = 40;
+
+      renderGroupedView(currentFilteredGroups.slice(0, currentGroupLimit));
+      renderFlatView(filtered.slice(0, 80));
+
+      if (currentFilteredGroups.length > currentGroupLimit) {
+        loadMoreContainer.style.display = 'block';
+        btnLoadMore.innerText = `➕ 載入更多博主 (目前顯示 ${currentGroupLimit} / 共 ${currentFilteredGroups.length} 位)`;
+      } else {
+        loadMoreContainer.style.display = 'none';
+      }
+    }
+
+    if (btnLoadMore) {
+      btnLoadMore.onclick = () => {
+        currentGroupLimit += 40;
+        renderGroupedView(currentFilteredGroups.slice(0, currentGroupLimit));
+        if (currentFilteredGroups.length > currentGroupLimit) {
+          btnLoadMore.innerText = `➕ 載入更多博主 (目前顯示 ${currentGroupLimit} / 共 ${currentFilteredGroups.length} 位)`;
+        } else {
+          loadMoreContainer.style.display = 'none';
+        }
+      };
     }
 
     // 渲染模式 A：依博主歸類聚合卡片清單
