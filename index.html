@@ -730,6 +730,7 @@
         <div class="stat-badge">全庫資源: <strong id="totalCount">0</strong> 部</div>
         <div class="stat-badge">獨立博主: <strong id="bloggerCount">0</strong> 位</div>
         <div class="stat-badge">當前顯示: <strong id="showingCount">0</strong> 位博主</div>
+        <div class="stat-badge" style="background:rgba(56,189,248,0.18); border-color:#38bdf8; color:#38bdf8; font-weight:700;">▶️ 點擊按鈕直接網頁原畫在線播放</div>
       </div>
     </div>
     <div style="max-width:1400px; margin:10px auto 0; display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08);">
@@ -879,12 +880,12 @@
       <div style="padding: 18px;">
         <div class="modal-pikpak-banner">
           <div style="font-size: 13px; font-weight:700; color:var(--accent-blue); margin-bottom:8px;">
-            ☁️ PikPak 官方雲端直連網址：
+            ☁️ 官方雲端直連（免下載・網頁在線原畫秒播）：
           </div>
           <div style="display:flex; gap:8px;">
             <input type="text" id="modalUrlInput" class="modal-url-input" readonly>
             <button class="btn-copy" id="btnModalCopyUrl">一鍵複製</button>
-            <a href="#" target="_blank" id="btnModalOpenUrl" class="btn-copy" style="text-decoration:none; display:inline-flex; align-items:center;">開啟直連</a>
+            <a href="#" target="_blank" rel="noopener noreferrer" id="btnModalOpenUrl" class="btn-copy" style="text-decoration:none; display:inline-flex; align-items:center; background:linear-gradient(135deg,#0284c7,#38bdf8); color:#0f172a; font-weight:800;">▶️ 網頁在線秒播</a>
           </div>
         </div>
 
@@ -1200,11 +1201,16 @@
               <!-- 右側操作與快速連結 -->
               <div class="blogger-right" onclick="event.stopPropagation()">
                 <div class="quick-pikpak-bar" title="最新合集網址: ${mainShareUrl}">
-                  <a href="${mainShareUrl}" target="_blank" class="quick-url-text">
+                  ${mainShareUrl ? `
+                    <a href="${mainShareUrl}" target="_blank" rel="noopener noreferrer" class="btn-copy" style="background:linear-gradient(135deg,#0284c7,#38bdf8); color:#0f172a; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; gap:3px;">
+                      ▶️ 網頁在線秒播
+                    </a>
+                  ` : ''}
+                  <a href="${mainShareUrl}" target="_blank" rel="noopener noreferrer" class="quick-url-text">
                     ☁️ ${escapeHtml(mainShortUrl || mainShareUrl)}
                   </a>
-                  <button class="btn-copy" onclick="copyText('${mainShareUrl}', this)">複製網址</button>
-                  ${tgVids.length > 0 ? `<a href="${tgVids[0].url}" target="_blank" class="btn-copy" style="background:linear-gradient(135deg,#059669,#10b981); color:#fff; text-decoration:none;">▶️ 群內直看</a>` : ''}
+                  <button class="btn-copy" onclick="copyText('${mainShareUrl}', this)">複製</button>
+                  ${tgVids.length > 0 ? `<a href="${tgVids[0].url}" target="_blank" class="btn-copy" style="background:linear-gradient(135deg,#059669,#10b981); color:#fff; text-decoration:none;">▶️ TG直看</a>` : ''}
                   <a href="https://t.me/CCsexybot?start=get_${encodeURIComponent(blogger)}" target="_blank" class="btn-copy" style="background:linear-gradient(135deg,#6366f1,#a855f7); color:#fff; text-decoration:none;">🎁 TG秒領</a>
                 </div>
                 ${isMulti ? `
@@ -1256,10 +1262,12 @@
                     </div>
                     <div class="sub-item-right">
                       <div class="quick-pikpak-bar">
-                        <a href="${subUrl}" target="_blank" class="quick-url-text" title="${subUrl}">
-                          ☁️ ${escapeHtml(subShort)}
-                        </a>
-                        <button class="btn-copy" onclick="copyText('${subUrl}', this)">複製</button>
+                        ${subUrl ? `
+                          <a href="${subUrl}" target="_blank" rel="noopener noreferrer" class="btn-copy" style="background:linear-gradient(135deg,#0284c7,#38bdf8); color:#0f172a; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; gap:3px;">
+                            ▶️ 網頁在線秒播
+                          </a>
+                        ` : ''}
+                        <button class="btn-copy" onclick="copyText('${subUrl}', this)">複製網址</button>
                       </div>
                       <button class="btn-view-detail" onclick="openDetail(${sub.id})">詳情</button>
                     </div>
@@ -1298,8 +1306,12 @@
             </td>
             <td>
               <div class="quick-pikpak-bar">
-                <a href="${shareUrl}" target="_blank" class="quick-url-text">${escapeHtml(shortUrl)}</a>
-                <button class="btn-copy" onclick="copyText('${shareUrl}', this)">複製</button>
+                ${shareUrl ? `
+                  <a href="${shareUrl}" target="_blank" rel="noopener noreferrer" class="btn-copy" style="background:linear-gradient(135deg,#0284c7,#38bdf8); color:#0f172a; font-weight:800; text-decoration:none;">
+                    ▶️ 網頁在線秒播
+                  </a>
+                ` : ''}
+                <button class="btn-copy" onclick="copyText('${shareUrl}', this)">複製網址</button>
               </div>
             </td>
             <td><code class="code-tag" onclick="copyText('${code}', null)">${escapeHtml(code)}</code></td>
